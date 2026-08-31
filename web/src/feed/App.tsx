@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { timestampOf } from "../shared/format";
 import { useTheme } from "../shared/hooks/useTheme";
 import { STORAGE_KEYS } from "../shared/storage";
@@ -55,6 +55,19 @@ export function App() {
     (item) =>
       timestampOf(item) > feed.lastSeenAt && !feed.items.some((shown) => shown.id === item.id),
   ).length;
+
+  // Licznik nieprzeczytanych na dzial: materialy juz pokazane na ekranie
+  // (feed.items), swiezsze niz ostatnio widziane i jeszcze nie przeczytane.
+  // Dziala na feed.items, a nie feed.fetched, bo dotyczy tego, co czytelnik
+  // realnie widzi na liscie, nie tego, co czeka w pasku "N nowych".
+  const freshByCategory = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of feed.items) {
+      if (!feed.freshIds.has(item.id) || seen.has(item.id)) continue;
+      counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
+    }
+    return counts;
+  }, [feed.items, feed.freshIds, seen]);
 
   const vote = useCallback(
     (id: string, value: ReactionVote) => {
@@ -115,7 +128,7 @@ export function App() {
         onToggleTheme={toggleTheme}
       />
 
-      <CategoryFilter active={category} onChange={setCategory} />
+      <CategoryFilter active={category} onChange={setCategory} counts={freshByCategory} />
 
       <PendingBar
         count={pending}

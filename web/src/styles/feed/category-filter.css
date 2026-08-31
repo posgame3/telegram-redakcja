@@ -10,10 +10,11 @@
   z-index: 9;
   top: 0;
   display: flex;
-  gap: 4px;
+  gap: 0;
   overflow-x: auto;
-  border-bottom: 1px solid var(--rule);
-  padding: 8px 18px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 3px double var(--rule);
+  padding: 0 18px;
   background: color-mix(in oklch, var(--paper) 94%, transparent);
   backdrop-filter: blur(8px);
   scrollbar-width: none;
@@ -35,10 +36,16 @@
 .category-filter::-webkit-scrollbar {
   display: none;
 }
+/* Spis dzialow jak w drukowanym indeksie: pozycje oddzielone waskimi
+   liniami, aktywny dzial jest po prostu odwrocony (tlo-ink, litery-papier). */
 .category-filter button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   flex: 0 0 auto;
-  border: 1px solid transparent;
-  padding: 7px 11px;
+  border: 0;
+  border-right: 1px solid var(--rule-soft);
+  padding: 10px 14px;
   background: transparent;
   cursor: pointer;
   font-family: var(--sans);
@@ -46,17 +53,30 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+.category-filter button:last-child {
+  border-right: 0;
+}
 .category-filter button:hover {
-  border-color: var(--rule-soft);
+  background: var(--paper-deep);
 }
 .category-filter button.is-active {
-  border-color: var(--rule);
   background: var(--ink);
-  color: var(--paper);
+  color: var(--accent-ink);
+}
+.category-filter button.is-active:hover {
+  background: var(--ink);
 }
 .category-filter button:first-child {
   scroll-margin-left: 18px;
 }
 .category-filter button:last-child {
   scroll-margin-right: 18px;
+}
+/* Licznik nieprzeczytanych: nosnik stanu, nie tresci - mono, w ramce. */
+.category-filter-count {
+  border: 1px solid currentColor;
+  padding: 0 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0;
 }

@@ -93,12 +93,15 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
       } else if (event.key === "ArrowDown") {
         event.preventDefault();
         reader.rate("dislike");
+      } else if (event.key === " " && current) {
+        event.preventDefault();
+        setSheetSource(current.id);
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, keyboardBlocked, photoItem, reader, sheetOpen]);
+  }, [current, isOpen, keyboardBlocked, photoItem, reader, sheetOpen]);
 
   const share = async () => {
     if (!current) return;
@@ -146,6 +149,13 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
       </div>
 
       <div className="reader-stage">
+        {current && (
+          <div className="reader-margin" aria-hidden="true">
+            <span className="reader-margin-like">▲ TAK</span>
+            <span className="reader-margin-skip">▼ NIE</span>
+          </div>
+        )}
+
         {current && (
           <article
             className="reader-card"
@@ -198,11 +208,8 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
               </div>
               <h1 id="reader-title">{headlineOf(current)}</h1>
               {current.level2 && <p className="reader-deck">{current.level2}</p>}
-              <p className="reader-hint">
-                Przesuń w górę, aby ocenić pozytywnie. W dół, aby ocenić negatywnie. W prawo, aby
-                przejść dalej. Dotknij zdjęcia, aby je powiększyć.
-              </p>
             </div>
+            <p className="reader-hint">↑ TAK · ↓ NIE · → NASTĘPNA · SPACJA = ŹRÓDŁA</p>
           </article>
         )}
 

@@ -12,7 +12,12 @@ interface PendingBarProps {
 export function PendingBar({ count, onShow }: PendingBarProps) {
   return (
     <button className="pending-bar" type="button" hidden={count === 0} onClick={onShow}>
-      {count > 0 ? `↑ ${count} ${pluralNews(count)} — pokaż` : ""}
+      {count > 0 && (
+        <>
+          <span className="pending-bar-dot" aria-hidden="true" />
+          {`${count} ${pluralNews(count)} — pokaż`}
+        </>
+      )}
     </button>
   );
 }

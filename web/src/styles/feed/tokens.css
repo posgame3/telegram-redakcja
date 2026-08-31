@@ -1,31 +1,33 @@
-/* Zmienne wygladu starej gazety dla trybu jasnego i ciemnego. */
-
-/* Wyglad starej gazety: papier w kolorze kremowym, czarny tusz, wloskowe linie,
-   szeryfowa typografia, wersaliki w etykietach dzialow i inicjal w czytniku.
-   Kolory trzymamy w zmiennych, zeby tryb jasny i ciemny dzialaly bez wyjatkow. */
+/* Paleta "Margines": papier, atrament, druk. Nazwy zmiennych zostaja te same,
+   zmieniaja sie tylko wartosci - reszta arkusza ich uzywa bez modyfikacji. */
 :root {
-  --paper: oklch(0.95 0.018 88);
-  --paper-deep: oklch(0.92 0.022 86);
-  --surface: oklch(0.97 0.014 90);
-  --ink: oklch(0.21 0.012 60);
-  --ink-soft: oklch(0.42 0.014 62);
-  --rule: oklch(0.28 0.014 60);
-  --rule-soft: oklch(0.72 0.016 78);
-  --accent: oklch(0.42 0.13 28);
-  --accent-ink: oklch(0.97 0.014 90);
+  --paper: #f4efe4;
+  --paper-deep: #efe8d9;
+  --surface: #f4efe4;
+  --ink: #17150f;
+  --ink-soft: #3b372c;
+  --ink-muted: #6b6353;
+  --rule: #17150f;
+  --rule-soft: #cfc6b0;
+  --accent: #8a1f16;
+  --accent-ink: #f4efe4;
   --focus: oklch(0.55 0.14 250);
-  --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-  --sans: "Helvetica Neue", Arial, sans-serif;
+  --shadow-hard: 14px 14px 0 rgba(23, 21, 15, 0.14);
+  --serif: Spectral, Georgia, "Iowan Old Style", serif;
+  --sans: Archivo, "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 [data-theme="dark"] {
-  --paper: oklch(0.17 0.008 60);
-  --paper-deep: oklch(0.14 0.008 60);
-  --surface: oklch(0.21 0.009 60);
-  --ink: oklch(0.93 0.008 88);
-  --ink-soft: oklch(0.74 0.012 84);
-  --rule: oklch(0.62 0.012 80);
-  --rule-soft: oklch(0.34 0.01 70);
-  --accent: oklch(0.72 0.13 32);
-  --accent-ink: oklch(0.16 0.01 60);
+  --paper: #14130f;
+  --paper-deep: #100f0c;
+  --surface: #1a1814;
+  --ink: #efe9db;
+  --ink-soft: #b9b2a1;
+  --ink-muted: #8b8474;
+  --rule: #efe9db;
+  --rule-soft: #2e2b23;
+  --accent: #d9a038;
+  --accent-ink: #14130f;
   --focus: oklch(0.78 0.13 240);
+  --shadow-hard: 14px 14px 0 rgba(0, 0, 0, 0.45);
 }

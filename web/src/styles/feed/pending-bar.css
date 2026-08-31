@@ -6,24 +6,51 @@
   position: sticky;
   z-index: 8;
   top: 44px;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
   border: 0;
   border-bottom: 1px solid var(--rule);
   padding: 11px 16px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--accent-ink);
   cursor: pointer;
   font-family: var(--sans);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 .pending-bar[hidden] {
   display: none;
 }
 .pending-bar:hover {
-  background: var(--accent);
+  background: var(--ink);
   color: var(--accent-ink);
+}
+/* Kropka sygnalizujaca "nowe" bez ruchu tekstu - rozmiar elementu nie
+   zmienia sie, miga tylko wypelnienie. Wylaczana calkowicie dla czytelnikow
+   preferujacych ograniczony ruch. */
+.pending-bar-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+  animation: pending-bar-blink 1.4s ease-in-out infinite;
+}
+@keyframes pending-bar-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pending-bar-dot {
+    animation: none;
+  }
 }

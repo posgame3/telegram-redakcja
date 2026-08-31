@@ -19,9 +19,16 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--serif);
+  font-weight: 300;
   font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+p {
+  text-wrap: pretty;
 }
 body.is-reading {
   overflow: hidden;

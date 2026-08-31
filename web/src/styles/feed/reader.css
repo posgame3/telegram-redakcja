@@ -37,10 +37,35 @@
 }
 .reader-stage {
   position: relative;
+  display: grid;
+  grid-template-columns: 96px 1fr;
   flex: 1;
   min-height: 0;
   overflow: hidden;
   padding: 14px;
+  gap: 14px;
+}
+/* Margines nalezy do stanu i oceny, nigdy do tresci: skala pokazuje kierunki
+   gestu, ktory juz dziala (przeciagniecie karty albo strzalki), nie jest
+   samodzielnym przyciskiem. */
+.reader-margin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  writing-mode: vertical-rl;
+}
+.reader-margin-like {
+  color: var(--accent);
+}
+.reader-margin-skip {
+  color: var(--ink-muted);
 }
 /* touch-action: pan-y (nie none) — na iOS wartosc "none" na tym elemencie
    blokowalaby przewijanie rowniez w zagniezdzonym .reader-deck (efektywny
@@ -120,8 +145,12 @@
   margin: 0;
   font-family: var(--serif);
   font-size: clamp(1rem, 1.5vh + 0.9vw, 1.5rem);
-  font-weight: 400;
+  font-weight: 800;
   line-height: 1.34;
+}
+/* Spectral 800 sie zalewa na ciemnym tle - w trybie nocnym schodzimy do 300. */
+[data-theme="dark"] .reader-body h1 {
+  font-weight: 300;
 }
 /* Inicjal jak w druku. ::first-letter jest dostepnym sposobem na ten efekt. */
 .reader-body h1::first-letter {
@@ -174,7 +203,7 @@
     font-size: 2.5em;
   }
   .reader-hint {
-    display: none;
+    padding: 6px 14px;
   }
 }
 /* Wewnatrz karty: zapowiedz kontekstu przed pelna trescia. */
@@ -204,12 +233,18 @@
   cursor: not-allowed;
   opacity: 0.6;
 }
+/* Sterowanie wypisane drukiem w stopce kadru - nie w tresci, bo to informacja
+   o stanie i obsludze, nie o materiale. */
 .reader-hint {
+  flex: 0 0 auto;
   margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 10px;
-  line-height: 1.6;
+  border-top: 1px solid var(--rule-soft);
+  padding: 8px clamp(16px, 4.5vw, 30px);
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 .reader-stamp {
   position: absolute;

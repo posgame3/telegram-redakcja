@@ -66,13 +66,33 @@
   .category-filter {
     padding: 7px 12px;
   }
+  .feed-item {
+    grid-template-columns: 22px 1fr;
+  }
+  .feed-item-index {
+    padding-top: 14px;
+    font-size: 10px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
   .feed-item-button {
-    grid-template-columns: 104px 1fr;
+    grid-template-columns: 1fr 104px;
     gap: 12px;
-    padding: 14px 12px;
+    padding: 14px 12px 14px 0;
   }
   .colophon {
     padding: 14px 12px;
+  }
+  .reader-stage {
+    grid-template-columns: 22px 1fr;
+  }
+  .reader-margin {
+    padding: 6px 0;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+  .reader-sheet {
+    inset: 14px 14px 14px 36px;
   }
 }
 
@@ -91,7 +111,7 @@
     break-inside: avoid;
   }
   .feed-item-button {
-    padding: 16px 0;
+    padding: 16px 16px 16px 0;
   }
 }
 
@@ -112,8 +132,8 @@
     margin-inline: auto;
   }
   .reader-sheet {
-    max-width: 720px;
     inset: 22px 0;
+    max-width: 720px;
     margin-inline: auto;
   }
   .reader > .reader-more {

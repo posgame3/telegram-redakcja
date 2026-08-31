@@ -1,10 +1,13 @@
 /* Panel zrodel materialu wysuwany w czytniku. */
 
 /* --- Panel pelnej tresci --- */
+/* inset ma lewa wartosc rowna szerokosci marginesu (96px + 14px odstepu z
+   .reader-stage), zeby panel zrodel nie zaslanial skali TAK/NIE - margines
+   nalezy do stanu i oceny, nie do tresci. */
 .reader-sheet {
   position: absolute;
   z-index: 4;
-  inset: 14px;
+  inset: 14px 14px 14px 110px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -21,21 +24,26 @@
   justify-content: space-between;
   border-bottom: 3px double var(--rule);
   padding: 12px 16px;
-  color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 11px;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .reader-sheet-bar button {
-  border: 1px solid var(--rule);
-  padding: 7px 11px;
-  background: var(--paper);
+  border: 1px solid var(--rule-soft);
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--ink-muted);
   cursor: pointer;
-  font-family: var(--sans);
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+.reader-sheet-bar button:hover {
+  border-color: var(--rule);
+  color: var(--ink);
 }
 .reader-sheet-body {
   flex: 1;
@@ -49,7 +57,9 @@
   border-top: 1px solid var(--rule-soft);
   padding-top: 12px;
   color: var(--ink-soft);
-  font-size: 0.88rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.92rem;
   line-height: 1.6;
 }
 .reader-sources-head {
@@ -58,20 +68,39 @@
   justify-content: space-between;
   border-top: 1px solid var(--rule);
   padding-top: 12px;
-  color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 11px;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+/* Przypisy numerowane [1][2][3], nie punktory: margines 96px na numer mono
+   w kolorze akcentu, kolumna z tytulem i adnotacja domeny/godziny. */
 .reader-sources {
   margin: 14px 0 0;
-  padding: 0 0 0 20px;
+  padding: 0;
+  list-style: none;
   display: grid;
   gap: 16px;
+  counter-reset: source;
+}
+.reader-sources li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  counter-increment: source;
+}
+.reader-sources li::before {
+  content: "[" counter(source) "]";
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.4;
 }
 .reader-sources a {
-  font-size: 1rem;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 19px;
   line-height: 1.4;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
@@ -79,9 +108,9 @@
 .reader-sources small {
   display: block;
   margin-top: 5px;
-  color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 10px;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
