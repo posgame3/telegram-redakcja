@@ -21,9 +21,6 @@ function idFromHash(): string {
 }
 
 export function App() {
-  const queue = useEditorialQueue();
-  const { theme, toggle: toggleTheme } = useTheme(STORAGE_KEYS.panelTheme);
-
   const [filter, setFilter] = useState<QueueFilter>(DEFAULT_QUEUE_FILTER);
   // Zaznaczenie startuje od identyfikatora z adresu, jesli link go zawiera.
   const [selectedId, setSelectedId] = useState<string | null>(() => idFromHash() || null);
@@ -31,6 +28,11 @@ export function App() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+
+  // Automatyczne odswiezanie kolejki jest wstrzymane w trybie edycji, zeby nie
+  // nadpisac tekstu, ktory redaktor wlasnie pisze.
+  const queue = useEditorialQueue(editing);
+  const { theme, toggle: toggleTheme } = useTheme(STORAGE_KEYS.panelTheme);
 
   const view = usePanelView(setSelectedId);
   const { events } = queue;

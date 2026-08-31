@@ -21,6 +21,13 @@ export const QUEUE_FILTERS: readonly { value: QueueFilter; label: string }[] = [
 export const DEFAULT_QUEUE_FILTER: QueueFilter = "review";
 
 /**
+ * Odstep miedzy automatycznymi odczytami kolejki. Backend synchronizuje sie
+ * sam co 30 min, ale bez tego odpytywania panel nie dowiedzialby sie o nowych
+ * materialach i zmianach statusu, dopoki redaktor recznie nie kliknie POBIERZ NOWE.
+ */
+export const QUEUE_POLL_INTERVAL_MS = 20_000;
+
+/**
  * Opisy stanu kontroli tekstu. Warianty "blocked-*" pochodza z generatora
  * i znacza, ze material nie ma tresci; pozostale opisuja kontrole w przegladarce.
  */

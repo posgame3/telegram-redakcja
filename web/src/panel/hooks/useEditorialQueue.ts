@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchEditorialQueue, runSynchronization } from "../../shared/api";
 import type { EditorialEvent, LastSync, ReactionCountsById } from "../../shared/types";
+import { QUEUE_POLL_INTERVAL_MS } from "../labels";
 
 interface QueueData {
   events: EditorialEvent[];
@@ -22,8 +23,13 @@ export interface UseEditorialQueue extends QueueData {
   replaceEvent: (event: EditorialEvent) => void;
 }
 
-/** Dane kolejki redakcyjnej: odczyt, synchronizacja i punktowe podmiany materialow. */
-export function useEditorialQueue(): UseEditorialQueue {
+/**
+ * Dane kolejki redakcyjnej: odczyt, synchronizacja i punktowe podmiany materialow.
+ *
+ * @param autoRefreshPaused Wstrzymuje automatyczne odpytywanie, np. gdy redaktor
+ *   wlasnie edytuje material - odswiezenie w tle nie moze nadpisac niezapisanej pracy.
+ */
+export function useEditorialQueue(autoRefreshPaused = false): UseEditorialQueue {
   const [data, setData] = useState<QueueData>(EMPTY);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -60,6 +66,35 @@ export function useEditorialQueue(): UseEditorialQueue {
   }, [load]);
 
   const reload = useCallback(() => load(() => false), [load]);
+
+  // Odswiezanie w tle. Referencje trzymaja najswiezsze wartosci, zeby timer
+  // nie byl restartowany przy kazdym renderowaniu.
+  const loadRef = useRef(load);
+  const pausedRef = useRef(autoRefreshPaused);
+  useEffect(() => {
+    loadRef.current = load;
+    pausedRef.current = autoRefreshPaused;
+  }, [autoRefreshPaused, load]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (pausedRef.current) return;
+      void loadRef.current(() => false);
+    }, QUEUE_POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  // Odswiezenie zaraz po powrocie do karty: laptop uspiony przez godzine
+  // nie powinien pokazywac godzinnej nieaktualnej kolejki.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && !pausedRef.current) {
+        void loadRef.current(() => false);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
 
   const synchronize = useCallback(async (): Promise<string> => {
     setSyncing(true);
