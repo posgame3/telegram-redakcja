@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+// defineConfig z vitest/config, a nie z vite - inaczej sekcja test nie ma typow.
+import { defineConfig } from "vitest/config";
 
 const webRoot = resolve(import.meta.dirname, "web");
 
@@ -27,6 +28,13 @@ export default defineConfig({
         feed: resolve(webRoot, "feed.html"),
       },
     },
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./src/test-setup.ts"],
+    include: ["src/**/*.test.{ts,tsx}"],
+    restoreMocks: true,
   },
   server: {
     port: 5173,

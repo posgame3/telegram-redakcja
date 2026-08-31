@@ -15,7 +15,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "npm run typecheck && npm run lint && npm run test",
-    "test": "node --test tests/aggregator.test.mjs tests/generator.test.mjs tests/scraper.test.mjs tests/feed.test.mjs",
+    "test": "npm run test:server && npm run test:web",
+    "test:server": "node --test tests/aggregator.test.mjs tests/generator.test.mjs tests/scraper.test.mjs tests/feed.test.mjs",
+    "test:web": "vitest run",
+    "test:watch": "vitest",
     "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
@@ -31,6 +34,9 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.6",
     "@types/node": "26.4.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
@@ -42,6 +48,7 @@
     "prettier": "3.9.6",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",
-    "vite": "8.2.2"
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
   }
 }
