@@ -19,3 +19,7 @@ dist/
 
 # Cache narzedzi
 node_modules/.tmp/
+
+# Umowa - dokument biznesowy, nie do repo
+UmowaMVP.pdf
+umowa-mvp.html
