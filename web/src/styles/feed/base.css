@@ -58,3 +58,13 @@ a:focus-visible {
 .skip-link:focus {
   transform: none;
 }
+/* Tresc dostepna dla technologii asystujacych i testow, bez powielania
+   informacji juz widocznej w warstwie wizualnej (pasek statusu czytnika). */
+.sr-only-meta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}

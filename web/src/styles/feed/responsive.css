@@ -94,6 +94,17 @@
   .reader-sheet {
     inset: 14px 14px 14px 36px;
   }
+  .reader-status {
+    gap: 10px 14px;
+    font-size: 9.5px;
+  }
+  .reader-status-meta {
+    flex: 1 0 100%;
+    margin-left: 0;
+  }
+  .reader-progress-seg {
+    width: 14px;
+  }
 }
 
 /* Szerokie ekrany: prawdziwe lamy gazetowe. CSS columns sam rysuje wloskowa

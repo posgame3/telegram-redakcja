@@ -150,6 +150,7 @@ export function App() {
       <Reader
         reader={reader}
         ratingLabel={reader.current ? reactions.labelFor(reader.current.id) : ""}
+        fresh={reader.current ? feed.freshIds.has(reader.current.id) : false}
         keyboardBlocked={installOpen}
       />
 

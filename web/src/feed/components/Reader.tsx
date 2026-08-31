@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { formatFullDate, formatRelativeAge } from "../../shared/format";
+import { formatDate, formatFullDate, formatRelativeAge } from "../../shared/format";
 import type { Publication } from "../../shared/types";
 import type { UseReaderQueue } from "../hooks/useReaderQueue";
 import { headlineOf } from "../publication";
@@ -32,14 +32,37 @@ function legacyCopy(text: string): boolean {
   return copied;
 }
 
+/** Ile segmentow pokazujemy naraz w pasku postepu paska statusu. */
+const PROGRESS_SEGMENTS = 6;
+
+/**
+ * Pasek segmentowy w pasku statusu czytnika: przeczytane materialy pelne,
+ * biezacy w akcencie, pozostale wygaszone. Odpowiednik segmentow z makiety
+ * "Margines" (widok 1a) - nosnik stanu kolejki, nie tresci materialu.
+ */
+function ReaderProgress({ position, total }: { position: number; total: number }) {
+  if (total <= 0) return null;
+  const count = Math.min(PROGRESS_SEGMENTS, total);
+  return (
+    <div className="reader-progress">
+      {Array.from({ length: count }, (_, i) => {
+        const state = i + 1 < position ? "done" : i + 1 === position ? "current" : "upcoming";
+        return <span key={i} className={`reader-progress-seg is-${state}`} />;
+      })}
+    </div>
+  );
+}
+
 interface ReaderProps {
   reader: UseReaderQueue;
   ratingLabel: string;
+  /** Czy biezacy material jest nieprzeczytana nowoscia - steruje znacznikiem NOWE. */
+  fresh: boolean;
   /** Czy inne okno modalne przejmuje klawiature. */
   keyboardBlocked: boolean;
 }
 
-export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
+export function Reader({ reader, ratingLabel, fresh, keyboardBlocked }: ReaderProps) {
   const { current, isOpen } = reader;
   const sectionRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -152,6 +175,7 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
         {current && (
           <div className="reader-margin" aria-hidden="true">
             <span className="reader-margin-like">▲ TAK</span>
+            <span className="reader-margin-track" />
             <span className="reader-margin-skip">▼ NIE</span>
           </div>
         )}
@@ -178,38 +202,70 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
               ▼ Nie podoba się
             </div>
 
-            <div
-              onClick={(event) => {
-                // Dotkniecie zdjecia otwiera podglad, ale nie wtedy, gdy byl to gest.
-                if ((event.target as HTMLElement).closest("button")) return;
-                if (reader.lastGestureMoved()) return;
-                if (current.image) setPhotoSource(current.id);
-              }}
-            >
-              <MediaFigure item={current} className="reader-media" variant="full" withCredit>
-                {current.image && (
-                  <button
-                    type="button"
-                    className="media-zoom"
-                    onClick={() => setPhotoSource(current.id)}
-                  >
-                    Powiększ
-                  </button>
-                )}
-              </MediaFigure>
+            <div className="reader-status" aria-hidden="true">
+              <span className="reader-status-fresh">
+                {fresh && <span className="reader-status-dot" />} nieprzeczytane{" "}
+                {reader.queuePosition} z {reader.queueTotal}
+              </span>
+              <ReaderProgress position={reader.queuePosition} total={reader.queueTotal} />
+              <span className="reader-status-meta">
+                {current.category} · {formatDate(published)}
+              </span>
             </div>
 
-            <div className="reader-body">
-              <div className="reader-meta">
-                <span>{current.category}</span>
-                <time>{formatFullDate(published)}</time>
-                <span className="reader-age">{formatRelativeAge(published)}</span>
-                <span className="reader-rating">{ratingLabel}</span>
+            <div className="reader-columns">
+              <div className="reader-body">
+                <div className="reader-meta">
+                  {fresh && <span className="reader-meta-fresh">NOWE</span>}
+                  <span className="reader-meta-rule" />
+                  <span>{current.sourceCount} źródła</span>
+                </div>
+                <h1 id="reader-title">{headlineOf(current)}</h1>
+                <div className="reader-deck">
+                  {current.level2 && <p>{current.level2}</p>}
+                </div>
+                <div className="reader-sources-row">
+                  {current.sources.slice(0, 2).map((source) => (
+                    <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">
+                      {source.title}
+                    </a>
+                  ))}
+                </div>
               </div>
-              <h1 id="reader-title">{headlineOf(current)}</h1>
-              {current.level2 && <p className="reader-deck">{current.level2}</p>}
+
+              <div
+                className="reader-media-col"
+                onClick={(event) => {
+                  // Dotkniecie zdjecia otwiera podglad, ale nie wtedy, gdy byl to gest.
+                  if ((event.target as HTMLElement).closest("button")) return;
+                  if (reader.lastGestureMoved()) return;
+                  if (current.image) setPhotoSource(current.id);
+                }}
+              >
+                <MediaFigure item={current} className="reader-media" variant="full" withCredit>
+                  {current.image && (
+                    <button
+                      type="button"
+                      className="media-zoom"
+                      onClick={() => setPhotoSource(current.id)}
+                    >
+                      Powiększ
+                    </button>
+                  )}
+                </MediaFigure>
+                <p className="reader-hint">
+                  <span>↑ TAK · ↓ NIE · → NASTĘPNA</span>
+                  <span>SPACJA = ŹRÓDŁA</span>
+                </p>
+              </div>
             </div>
-            <p className="reader-hint">↑ TAK · ↓ NIE · → NASTĘPNA · SPACJA = ŹRÓDŁA</p>
+            {/* Metadane pozostaja w DOM dla czytnikow ekranu i testow, bez
+                duplikowania warstwy wizualnej opisanej wyzej paskiem statusu. */}
+            <div className="sr-only-meta">
+              <time>{formatFullDate(published)}</time>
+              <span>{formatRelativeAge(published)}</span>
+              <span>{ratingLabel}</span>
+            </div>
           </article>
         )}
 

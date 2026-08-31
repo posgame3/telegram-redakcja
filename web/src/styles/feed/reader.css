@@ -67,6 +67,14 @@
 .reader-margin-skip {
   color: var(--ink-muted);
 }
+/* Tor miedzy TAK i NIE: gradient sygnalizuje ze margines to skala, nie dwa
+   niezalezne napisy - kierunek gestu jest ciagly, nie binarny. */
+.reader-margin-track {
+  flex: 1;
+  width: 3px;
+  margin: 10px 0;
+  background: linear-gradient(var(--accent) 0 32%, var(--rule-soft) 32% 68%, var(--ink) 68% 100%);
+}
 /* touch-action: pan-y (nie none) — na iOS wartosc "none" na tym elemencie
    blokowalaby przewijanie rowniez w zagniezdzonym .reader-deck (efektywny
    touch-action to przeciecie wartosci calego lancucha przodkow), przez co
@@ -86,6 +94,82 @@
 .reader-card:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: -3px;
+}
+/* Pasek statusu: nieprzeczytane w kolejce, segmenty postepu, dzial i godzina.
+   Nosnik stanu kolejki, wiec caly pasek jest aria-hidden - stan realny
+   (pozycja, ocena) jest juz w reader-bar i sr-only-meta. */
+.reader-status {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  border-bottom: 1px solid var(--rule);
+  padding: 10px clamp(16px, 4.5vw, 28px);
+  color: var(--ink-muted);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.reader-status-fresh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.reader-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: reader-status-blink 1.6s steps(1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reader-status-dot {
+    animation: none;
+  }
+}
+@keyframes reader-status-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.15;
+  }
+}
+.reader-progress {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.reader-progress-seg {
+  width: 22px;
+  height: 3px;
+  background: var(--rule-soft);
+}
+.reader-progress-seg.is-done {
+  background: var(--accent);
+}
+.reader-progress-seg.is-current {
+  background: var(--ink);
+}
+.reader-status-meta {
+  margin-left: auto;
+}
+/* Desktop: tekst i zdjecie jedno przy drugim, tak jak w kadrze prasowym -
+   lewa kolumna nosi tresc, prawa jest kontekstem wizualnym, nie odwrotnie. */
+.reader-columns {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+.reader-media-col {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
 }
 .reader-media {
   position: relative;
@@ -113,29 +197,43 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
   padding: clamp(16px, 4.5vw, 30px);
 }
 .reader-meta {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
-  align-items: baseline;
-  border-bottom: 1px solid var(--rule-soft);
-  padding-bottom: 10px;
-  color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
-.reader-meta #reader-category {
+.reader-meta-fresh {
   color: var(--accent);
+  font-family: var(--sans);
   font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
 }
-.reader-rating {
-  color: var(--ink);
-  font-weight: 700;
+.reader-meta-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--ink);
+}
+.reader-meta span:last-child {
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+.reader-sources-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: auto;
+  border-top: 1px solid var(--rule-soft);
+  padding-top: 16px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 /* flex: 0 1 auto z min-height: 0 pozwala naglowkowi ustapic, gdy brak miejsca,
    dzieki czemu przycisk i pasek akcji nigdy nie zostana zaslonieta. */
@@ -206,9 +304,24 @@
     padding: 6px 14px;
   }
 }
-/* Wewnatrz karty: zapowiedz kontekstu przed pelna trescia. */
-.reader-body .reader-more {
-  margin-top: auto;
+/* Desktop: makieta "Margines" 1a - kolumna tekstu po lewej, zdjecie i
+   sterowanie po prawej, obok siebie zamiast jedno pod drugim. */
+@media (min-width: 900px) {
+  .reader-columns {
+    flex-direction: row;
+  }
+  .reader-body {
+    flex: 1.05;
+    border-right: 1px solid var(--rule-soft);
+  }
+  .reader-media-col {
+    flex: 0.95;
+  }
+  .reader-media {
+    flex: 1;
+    height: auto;
+    border-bottom: 0;
+  }
 }
 /* Na dole ekranu: jedyny pozostajacy przycisk po usunieciu paska nawigacji
    i ocen - te dzialaja teraz przez gest przesuniecia karty. */
@@ -234,17 +347,26 @@
   opacity: 0.6;
 }
 /* Sterowanie wypisane drukiem w stopce kadru - nie w tresci, bo to informacja
-   o stanie i obsludze, nie o materiale. */
+   o stanie i obsludze, nie o materiale. Zyje w stopce kolumny zdjecia, tak
+   jak w makiecie 1a ("Margines"), i pojawia sie tez pod zdjeciem na mobile. */
 .reader-hint {
   flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
   margin: 0;
   border-top: 1px solid var(--rule-soft);
-  padding: 8px clamp(16px, 4.5vw, 30px);
+  padding: 10px clamp(16px, 4.5vw, 22px);
   color: var(--ink-muted);
   font-family: var(--mono);
   font-size: 10.5px;
   letter-spacing: 0.04em;
-  text-align: center;
+}
+@media (min-width: 900px) {
+  .reader-hint {
+    justify-content: space-between;
+  }
 }
 .reader-stamp {
   position: absolute;

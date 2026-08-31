@@ -39,6 +39,10 @@ export interface UseReaderQueue {
   positionLabel: string;
   hasPrevious: boolean;
   hasNext: boolean;
+  /** Pozycja biezacego materialu w kolejce (od 1). Do wskaznikow postepu w marginesie. */
+  queuePosition: number;
+  /** Liczba materialow w kolejce. Do wskaznikow postepu w marginesie. */
+  queueTotal: number;
   animation: ReturnType<typeof useCardAnimation>;
   openReader: (item: Publication, trigger?: HTMLElement | null) => void;
   close: () => void;
@@ -297,6 +301,8 @@ export function useReaderQueue({
     positionLabel,
     hasPrevious: index > 0,
     hasNext: index < queue.length - 1,
+    queuePosition: index + 1,
+    queueTotal: queue.length,
     animation,
     openReader,
     close,
