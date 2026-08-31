@@ -425,11 +425,12 @@ function editorialPayload(body) {
 
 async function validateEditorial(event, patch) {
   const context = await store.getValidationContext(event.validationId || event.id);
-  if (!context)
+  if (!context) {
     return {
       valid: false,
       reasons: ["Brak trwałego kontekstu źródłowego. Uruchom ponowną synchronizację."],
     };
+  }
   const short = validateOriginality(patch.level1, context);
   const long = validateContextOriginality(patch.level2, context);
   const metadata = validateEditorialMetadata(patch, context);
@@ -438,8 +439,9 @@ async function validateEditorial(event, patch) {
 }
 
 async function syncNow({ force = false } = {}) {
-  if (!force && syncCache && Date.now() - syncCache.createdAt < cacheTtlMs)
+  if (!force && syncCache && Date.now() - syncCache.createdAt < cacheTtlMs) {
     return { ...syncCache.value, cached: true };
+  }
   if (syncPromise) return syncPromise;
   syncPromise = (async () => {
     const value = await synchronize(SOURCES, {
@@ -600,8 +602,9 @@ const server = createServer(async (request, response) => {
     if (["GET", "HEAD"].includes(request.method || "") && url.pathname === "/img") {
       const sourceUrl = url.searchParams.get("u") || "";
       const variant = url.searchParams.get("v") === "thumb" ? "thumb" : "full";
-      if (!sourceUrl || !(await store.isKnownImageUrl(sourceUrl)))
+      if (!sourceUrl || !(await store.isKnownImageUrl(sourceUrl))) {
         return sendJson(response, 404, { error: "Nieznany obrazek" });
+      }
       try {
         const webp = await imageProxy.getWebp(sourceUrl, variant);
         response.writeHead(200, {
@@ -625,8 +628,9 @@ const server = createServer(async (request, response) => {
       const origin = request.headers.origin;
       if (origin) {
         try {
-          if (new URL(origin).host !== host)
+          if (new URL(origin).host !== host) {
             return sendJson(response, 403, { error: "Niedozwolone źródło żądania" });
+          }
         } catch {
           return sendJson(response, 403, { error: "Nieprawidłowy nagłówek Origin" });
         }
@@ -639,11 +643,13 @@ const server = createServer(async (request, response) => {
       const allowed = new Set(["like", "dislike", ""]);
       const from = allowed.has(body.from) ? body.from : "";
       const to = allowed.has(body.to) ? body.to : "";
-      if (!id || (!from && !to) || from === to)
+      if (!id || (!from && !to) || from === to) {
         return sendJson(response, 400, { error: "Nieprawidłowa ocena" });
+      }
       const counts = await store.recordReaction(id, from, to);
-      if (!counts)
+      if (!counts) {
         return sendJson(response, 404, { error: "Nie znaleziono opublikowanego materiału" });
+      }
       return sendJson(response, 200, { id, reactions: counts });
     }
     if (request.method === "GET" && url.pathname === "/api/editorial/events") {
@@ -655,25 +661,29 @@ const server = createServer(async (request, response) => {
       });
     }
     if (request.method === "POST" && url.pathname === "/api/sync") {
-      if (!isAuthorizedAction(request, "sync"))
+      if (!isAuthorizedAction(request, "sync")) {
         return sendJson(response, 403, { error: "Niedozwolone żądanie synchronizacji" });
+      }
       return sendJson(response, 200, await syncNow({ force: true }));
     }
     if (request.method === "POST" && url.pathname === "/api/validate") {
-      if (!isAuthorizedAction(request, "validate"))
+      if (!isAuthorizedAction(request, "validate")) {
         return sendJson(response, 403, { error: "Niedozwolone żądanie walidacji" });
+      }
       const body = await readJsonBody(request);
       const validationId =
         typeof body.validationId === "string" ? body.validationId.slice(0, 100) : "";
       const text = typeof body.text === "string" ? body.text.trim() : "";
       const field = body.field === "level2" ? "level2" : "level1";
-      if (!validationId || !text || text.length > 2_500)
+      if (!validationId || !text || text.length > 2_500) {
         return sendJson(response, 400, { error: "Nieprawidłowy identyfikator lub tekst" });
+      }
       const context = await store.getValidationContext(validationId);
-      if (!context)
+      if (!context) {
         return sendJson(response, 409, {
           error: "Kontekst źródłowy wygasł. Wykonaj ponowną synchronizację.",
         });
+      }
       return sendJson(
         response,
         200,
@@ -683,8 +693,9 @@ const server = createServer(async (request, response) => {
       );
     }
     if (request.method === "POST" && url.pathname === "/api/editorial") {
-      if (!isAuthorizedAction(request, "editorial"))
+      if (!isAuthorizedAction(request, "editorial")) {
         return sendJson(response, 403, { error: "Niedozwolona operacja redakcyjna" });
+      }
       const body = await readJsonBody(request);
       const eventId = typeof body.eventId === "string" ? body.eventId.slice(0, 100) : "";
       const action = ["save", "approve", "reject", "publish", "reopen", "regenerate"].includes(
@@ -693,17 +704,20 @@ const server = createServer(async (request, response) => {
         ? body.action
         : "";
       const event = await store.getEvent(eventId);
-      if (!event || !action)
+      if (!event || !action) {
         return sendJson(response, 404, { error: "Nie znaleziono materiału lub akcji" });
+      }
 
       if (action === "regenerate") {
         const context = await store.getValidationContext(event.validationId || event.id);
-        if (!context)
+        if (!context) {
           return sendJson(response, 409, {
             error: "Brak kontekstu źródłowego. Uruchom ponowną synchronizację.",
           });
-        if (regenerating.has(eventId))
+        }
+        if (regenerating.has(eventId)) {
           return sendJson(response, 409, { error: "Generowanie tego materiału już trwa" });
+        }
         regenerating.add(eventId);
         try {
           const claims = Array.isArray(event.verification?.sharedClaims)
@@ -723,32 +737,37 @@ const server = createServer(async (request, response) => {
         }
       }
 
-      if (action === "reject")
+      if (action === "reject") {
         return sendJson(response, 200, { event: await store.setStatus(eventId, "rejected") });
-      if (action === "reopen")
+      }
+      if (action === "reopen") {
         return sendJson(response, 200, { event: await store.setStatus(eventId, "review") });
+      }
       if (action === "publish") {
         const publication = await store.publish(eventId);
-        if (!publication)
+        if (!publication) {
           return sendJson(response, 409, {
             error: "Publikacja wymaga wcześniejszej akceptacji materiału",
           });
+        }
         return sendJson(response, 200, { publication, event: await store.getEvent(eventId) });
       }
 
       const patch = editorialPayload(body);
       const validation = await validateEditorial(event, patch);
-      if (!validation.valid && action === "approve")
+      if (!validation.valid && action === "approve") {
         return sendJson(response, 422, {
           error: "Materiał nie spełnia zasad redakcyjnych",
           validation,
         });
+      }
       await store.updateEditorial(eventId, { ...patch, validation, resetDecision: true });
       if (action === "approve") await store.setStatus(eventId, "approved");
       return sendJson(response, 200, { event: await store.getEvent(eventId), validation });
     }
-    if (!["GET", "HEAD"].includes(request.method || ""))
+    if (!["GET", "HEAD"].includes(request.method || "")) {
       return sendJson(response, 405, { error: "Metoda niedozwolona" });
+    }
     if (requiresAdminStatic(url.pathname) && !isAdmin(request)) return sendUnauthorized(response);
     return serveStatic(url.pathname, response, request.method === "HEAD");
   } catch (error) {
