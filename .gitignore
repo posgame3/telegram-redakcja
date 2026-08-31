@@ -16,3 +16,6 @@ dist/
 # System
 .DS_Store
 *.log
+
+# Cache narzedzi
+node_modules/.tmp/

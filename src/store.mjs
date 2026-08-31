@@ -102,11 +102,6 @@ export class EditorialStore {
     return this;
   }
 
-  async #refreshPublishedIds() {
-    const { data, error } = await this.client.from("publications").select("id");
-    if (!error) this.publishedIds = new Set((data || []).map((row) => row.id));
-  }
-
   // Laczy wynik synchronizacji agregatora z istniejacym stanem. Zachowuje
   // tresc redaktora, jesli material byl juz recznie edytowany (editorialWasChanged).
   async mergeSynchronization(payload, contexts = {}) {

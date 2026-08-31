@@ -1,0 +1,7 @@
+dist/
+node_modules/
+data/
+state/
+supabase/
+package-lock.json
+*.md

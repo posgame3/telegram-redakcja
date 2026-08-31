@@ -13,6 +13,11 @@
   "theme_color": "#1c1a16",
   "lang": "pl",
   "icons": [
-    { "src": "/telegram-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    {
+      "src": "/telegram-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }

@@ -158,9 +158,17 @@ function assertPublicAccess($, jsonLd, source, item) {
   const freeValue = jsonLd?.isAccessibleForFree;
   if (freeValue === false || String(freeValue).toLowerCase() === "false") throw new ScrapeError("PAYWALL", "Metadane oznaczają treść płatną");
   const denySelectors = ["[data-paywall]", ".paywall", "[class*='paywall']", ...(source.rejectSelectors || [])];
-  if (denySelectors.some((selector) => {
-    try { return $(selector).length > 0; } catch { return false; }
-  })) throw new ScrapeError("PAYWALL", "Strona zawiera znacznik treści płatnej");
+  const matchesDenySelector = denySelectors.some((selector) => {
+    try {
+      return $(selector).length > 0;
+    } catch {
+      // Wadliwy selektor z konfiguracji zrodla nie moze przerwac sprawdzania pozostalych.
+      return false;
+    }
+  });
+  if (matchesDenySelector) {
+    throw new ScrapeError("PAYWALL", "Strona zawiera znacznik treści płatnej");
+  }
 
   const officialRssItem = item.sourceId === source.id && isAllowedSourceUrl(source, item.url);
   const explicitFree = freeValue === true || String(freeValue).toLowerCase() === "true";

@@ -260,7 +260,11 @@ function isAuthorizedAction(request, action) {
   const fetchSite = request.headers["sec-fetch-site"];
   let sameOrigin = true;
   if (origin) {
-    try { sameOrigin = new URL(origin).host === host; } catch { sameOrigin = false; }
+    try {
+      sameOrigin = new URL(origin).host === host;
+    } catch {
+      sameOrigin = false;
+    }
   }
   return allowedHosts.has(host)
     && sameOrigin
@@ -293,11 +297,6 @@ async function readJsonBody(request, maxBytes = 24_576) {
     error.statusCode = 400;
     throw error;
   }
-}
-
-function publicEvent(event) {
-  const { validationId: _validationId, generation: _generation, verification: _verification, facts: _facts, ...safe } = event;
-  return safe;
 }
 
 function editorialPayload(body) {
@@ -512,7 +511,7 @@ const server = createServer(async (request, response) => {
       const patch = editorialPayload(body);
       const validation = await validateEditorial(event, patch);
       if (!validation.valid && action === "approve") return sendJson(response, 422, { error: "Materiał nie spełnia zasad redakcyjnych", validation });
-      const updated = await store.updateEditorial(eventId, { ...patch, validation, resetDecision: true });
+      await store.updateEditorial(eventId, { ...patch, validation, resetDecision: true });
       if (action === "approve") await store.setStatus(eventId, "approved");
       return sendJson(response, 200, { event: await store.getEvent(eventId), validation });
     }
