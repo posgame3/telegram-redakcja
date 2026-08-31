@@ -21,7 +21,13 @@ export default defineConfig({
   build: {
     outDir: resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
-    sourcemap: true,
+    // Bez map zrodel na produkcji: nie ujawniamy kodu i nie wysylamy na serwer
+    // plikow, ktore sa potrzebne wylacznie przy lokalnym debugowaniu.
+    sourcemap: false,
+    // Manifest pozwala serwerowi odnalezc hashowane nazwy plikow. Jest potrzebny
+    // dla strony materialu (/a/:id), ktora jest skladana po stronie serwera
+    // i musi wskazac wlasciwy arkusz stylow.
+    manifest: true,
     rollupOptions: {
       input: {
         panel: resolve(webRoot, "index.html"),

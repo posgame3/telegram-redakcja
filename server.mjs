@@ -5,7 +5,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { SOURCES } from "./src/sources.mjs";
 import { synchronize } from "./src/aggregator.mjs";
-import { generateEditorialPackage, validateContextOriginality, validateEditorialMetadata, validateOriginality } from "./src/generator.mjs";
+import {
+  generateEditorialPackage,
+  validateContextOriginality,
+  validateEditorialMetadata,
+  validateOriginality,
+} from "./src/generator.mjs";
 import { EditorialStore } from "./src/store.mjs";
 import { ImageProxy, ImageProxyError } from "./src/image-proxy.mjs";
 
@@ -21,12 +26,22 @@ const maxGroups = Math.max(1, Number(process.env.MAX_GROUPS || 20));
 const autoSyncEnabled = process.env.AUTO_SYNC !== "false";
 const adminUser = process.env.ADMIN_USER || "redakcja";
 const adminPassword = process.env.ADMIN_PASSWORD || "";
-const dataFile = process.env.TELEGRAM_DATA_FILE || path.join(path.dirname(root), ".telegram-redakcja-data", "editorial-state.json");
-const configuredHosts = String(process.env.ALLOWED_HOSTS || "").split(",").map((value) => value.trim()).filter(Boolean);
+const dataFile =
+  process.env.TELEGRAM_DATA_FILE ||
+  path.join(path.dirname(root), ".telegram-redakcja-data", "editorial-state.json");
+const configuredHosts = String(process.env.ALLOWED_HOSTS || "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
 const allowedHosts = new Set([`localhost:${port}`, `127.0.0.1:${port}`, ...configuredHosts]);
 const isLoopback = ["127.0.0.1", "localhost", "::1"].includes(listenHost);
 const trustProxy = process.env.TRUST_PROXY === "true";
-const trustedProxyIps = new Set(String(process.env.TRUSTED_PROXY_IPS || "").split(",").map((value) => value.trim()).filter(Boolean));
+const trustedProxyIps = new Set(
+  String(process.env.TRUSTED_PROXY_IPS || "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean),
+);
 const requiresProxyHttps = !isLoopback || trustProxy;
 const store = await new EditorialStore(dataFile).init();
 const imageCacheDir = process.env.IMAGE_CACHE_DIR || path.join(root, "state", "image-cache");
@@ -58,25 +73,98 @@ function allowReaction(client) {
 let schedulerTimer = null;
 let lastSchedulerError = null;
 
-if (requiresProxyHttps && (!adminPassword || configuredHosts.length === 0 || !trustProxy || trustedProxyIps.size === 0)) {
-  throw new Error("Publiczne uruchomienie wymaga ADMIN_PASSWORD, ALLOWED_HOSTS, TRUST_PROXY=true oraz TRUSTED_PROXY_IPS.");
+if (
+  requiresProxyHttps &&
+  (!adminPassword || configuredHosts.length === 0 || !trustProxy || trustedProxyIps.size === 0)
+) {
+  throw new Error(
+    "Publiczne uruchomienie wymaga ADMIN_PASSWORD, ALLOWED_HOSTS, TRUST_PROXY=true oraz TRUSTED_PROXY_IPS.",
+  );
 }
 
 const contentTypes = {
-  ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8", ".webmanifest": "application/manifest+json; charset=utf-8",
-  ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",
+  ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".ico": "image/x-icon",
+  ".woff2": "font/woff2",
 };
+
+// Frontend jest budowany przez Vite do katalogu dist. Trasy o stalych adresach
+// mapujemy wprost; pliki z hashem w nazwie sa serwowane z /assets.
+const distDir = path.join(root, "dist");
 const staticFiles = new Map([
-  ["/", "index.html"], ["/admin", "index.html"], ["/index.html", "index.html"],
-  ["/app.js", "app.js"], ["/styles.css", "styles.css"],
-  ["/feed", "feed.html"], ["/feed.html", "feed.html"], ["/feed.js", "feed.js"], ["/feed.css", "feed.css"],
-  ["/manifest.webmanifest", "manifest.webmanifest"], ["/sw.js", "sw.js"], ["/telegram-icon.svg", "telegram-icon.svg"],
+  ["/", "index.html"],
+  ["/admin", "index.html"],
+  ["/index.html", "index.html"],
+  ["/feed", "feed.html"],
+  ["/feed.html", "feed.html"],
+  ["/manifest.webmanifest", "manifest.webmanifest"],
+  ["/sw.js", "sw.js"],
+  ["/telegram-icon.svg", "telegram-icon.svg"],
 ]);
-const categories = new Set(["kraj", "biznes", "gospodarka", "geopolityka", "rynki", "świat", "technologia", "inne"]);
+
+/** Pliki builda: jeden poziom, bezpieczny zestaw znakow, hash w nazwie. */
+const ASSET_PATH = /^\/assets\/[A-Za-z0-9._-]+$/u;
+
+// Wszystko z wlasnego zrodla. Obrazki dodatkowo z data:, bo kafel zastepczy
+// uzywa wzoru tla. Zdjecia z zewnatrz przechodza przez /img, wiec sa "self".
+const STATIC_CSP =
+  "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; " +
+  "connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; frame-ancestors 'none'";
+
+/**
+ * Odczytuje manifest builda. Serwer potrzebuje z niego dwoch rzeczy:
+ *  - nazwy arkusza stylow feedu dla strony materialu skladanej po stronie
+ *    serwera (/a/:id), ktora inaczej stracilaby wyglad po kazdym buildzie,
+ *  - listy plikow nalezacych wylacznie do panelu, ktore zostaja za haslem.
+ */
+async function readBuildManifest() {
+  const manifestPath = path.join(distDir, ".vite", "manifest.json");
+  let manifest;
+  try {
+    manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  } catch (error) {
+    throw new Error(
+      `Nie udało się odczytać ${manifestPath}. Uruchom "npm run build" przed startem serwera.`,
+      { cause: error },
+    );
+  }
+
+  const feedStylesheet = manifest["feed.html"]?.css?.[0];
+  const panelEntry = manifest["index.html"];
+  if (!feedStylesheet || !panelEntry?.file) {
+    throw new Error("Manifest builda nie zawiera wpisów dla feed.html i index.html.");
+  }
+
+  return {
+    feedStylesheet: `/${feedStylesheet}`,
+    panelAssets: new Set([panelEntry.file, ...(panelEntry.css ?? [])].map((file) => `/${file}`)),
+  };
+}
+
+const { feedStylesheet, panelAssets } = await readBuildManifest();
+const categories = new Set([
+  "kraj",
+  "biznes",
+  "gospodarka",
+  "geopolityka",
+  "rynki",
+  "świat",
+  "technologia",
+  "inne",
+]);
 
 function sendJson(response, status, body, cacheControl = "no-store") {
-  response.writeHead(status, { "content-type": "application/json; charset=utf-8", "cache-control": cacheControl, "x-content-type-options": "nosniff" });
+  response.writeHead(status, {
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": cacheControl,
+    "x-content-type-options": "nosniff",
+  });
   response.end(JSON.stringify(body));
 }
 
@@ -118,7 +206,8 @@ function sendHtml(response, status, html) {
     "content-type": "text/html; charset=utf-8",
     "cache-control": status === 200 ? "public, max-age=60" : "no-store",
     "x-content-type-options": "nosniff",
-    "content-security-policy": "default-src 'self'; style-src 'self'; script-src 'none'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
+    "content-security-policy":
+      "default-src 'self'; style-src 'self'; script-src 'none'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
     "referrer-policy": "no-referrer",
   });
   response.end(html);
@@ -166,7 +255,7 @@ ${published ? `<meta property="article:published_time" content="${escapeHtml(pub
 <meta name="twitter:description" content="${escapeHtml(publication.level2 || headline)}">
 ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}">` : ""}
 <link rel="icon" href="/telegram-icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/feed.css">
+<link rel="stylesheet" href="${escapeHtml(feedStylesheet)}">
 </head>
 <body class="article-page">
 <header class="masthead">
@@ -197,7 +286,7 @@ function articleMissingPage(base) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nie znaleziono materiału — Telegram</title>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="/feed.css">
+<link rel="stylesheet" href="${escapeHtml(feedStylesheet)}">
 </head>
 <body class="article-page">
 <header class="masthead"><a class="masthead-title" href="/feed"><span>Telegram</span></a></header>
@@ -211,7 +300,11 @@ function articleMissingPage(base) {
 }
 
 function sendUnauthorized(response) {
-  response.writeHead(401, { "www-authenticate": "Basic realm=\"Telegram Redakcja\", charset=\"UTF-8\"", "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
+  response.writeHead(401, {
+    "www-authenticate": 'Basic realm="Telegram Redakcja", charset="UTF-8"',
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+  });
   response.end(JSON.stringify({ error: "Wymagane logowanie redaktora" }));
 }
 
@@ -228,8 +321,12 @@ function normalizeRemoteAddress(value) {
 function isTrustedHttpsRequest(request) {
   if (!requiresProxyHttps) return true;
   const remoteAddress = normalizeRemoteAddress(request.socket.remoteAddress);
-  const trusted = trustedProxyIps.has(remoteAddress) || trustedProxyIps.has(request.socket.remoteAddress || "");
-  const forwardedProto = String(request.headers["x-forwarded-proto"] || "").split(",")[0].trim().toLowerCase();
+  const trusted =
+    trustedProxyIps.has(remoteAddress) || trustedProxyIps.has(request.socket.remoteAddress || "");
+  const forwardedProto = String(request.headers["x-forwarded-proto"] || "")
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
   return trustProxy && trusted && forwardedProto === "https";
 }
 
@@ -237,8 +334,13 @@ function isTrustedHttpsRequest(request) {
 // naglowka proxy tylko wtedy, gdy proxy jest zaufane; inaczej zostaje http.
 function publicBase(request, host) {
   const remote = normalizeRemoteAddress(request.socket.remoteAddress);
-  const trusted = trustProxy && (trustedProxyIps.has(remote) || trustedProxyIps.has(request.socket.remoteAddress || ""));
-  const forwarded = String(request.headers["x-forwarded-proto"] || "").split(",")[0].trim().toLowerCase();
+  const trusted =
+    trustProxy &&
+    (trustedProxyIps.has(remote) || trustedProxyIps.has(request.socket.remoteAddress || ""));
+  const forwarded = String(request.headers["x-forwarded-proto"] || "")
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
   return `${trusted && forwarded === "https" ? "https" : "http"}://${host}`;
 }
 
@@ -247,7 +349,9 @@ function isAdmin(request) {
   const authorization = request.headers.authorization || "";
   if (!authorization.startsWith("Basic ")) return false;
   try {
-    const [user, password] = Buffer.from(authorization.slice(6), "base64").toString("utf8").split(/:(.*)/s);
+    const [user, password] = Buffer.from(authorization.slice(6), "base64")
+      .toString("utf8")
+      .split(/:(.*)/s);
     return safeEqual(user, adminUser) && safeEqual(password, adminPassword);
   } catch {
     return false;
@@ -266,15 +370,21 @@ function isAuthorizedAction(request, action) {
       sameOrigin = false;
     }
   }
-  return allowedHosts.has(host)
-    && sameOrigin
-    && (!fetchSite || ["same-origin", "none"].includes(fetchSite))
-    && request.headers["x-telegram-action"] === action
-    && isAdmin(request);
+  return (
+    allowedHosts.has(host) &&
+    sameOrigin &&
+    (!fetchSite || ["same-origin", "none"].includes(fetchSite)) &&
+    request.headers["x-telegram-action"] === action &&
+    isAdmin(request)
+  );
 }
 
 async function readJsonBody(request, maxBytes = 24_576) {
-  if (!String(request.headers["content-type"] || "").toLowerCase().startsWith("application/json")) {
+  if (
+    !String(request.headers["content-type"] || "")
+      .toLowerCase()
+      .startsWith("application/json")
+  ) {
     const error = new Error("Wymagany Content-Type application/json");
     error.statusCode = 415;
     throw error;
@@ -305,14 +415,21 @@ function editorialPayload(body) {
   const level2 = typeof body.level2 === "string" ? body.level2.trim().slice(0, 2_500) : "";
   const category = categories.has(body.category) ? body.category : "inne";
   const tags = Array.isArray(body.tags)
-    ? [...new Set(body.tags.map((tag) => String(tag).trim().toLowerCase()).filter(Boolean))].slice(0, 5)
+    ? [...new Set(body.tags.map((tag) => String(tag).trim().toLowerCase()).filter(Boolean))].slice(
+        0,
+        5,
+      )
     : [];
   return { title, level1, level2, category, tags };
 }
 
 async function validateEditorial(event, patch) {
   const context = await store.getValidationContext(event.validationId || event.id);
-  if (!context) return { valid: false, reasons: ["Brak trwałego kontekstu źródłowego. Uruchom ponowną synchronizację."] };
+  if (!context)
+    return {
+      valid: false,
+      reasons: ["Brak trwałego kontekstu źródłowego. Uruchom ponowną synchronizację."],
+    };
   const short = validateOriginality(patch.level1, context);
   const long = validateContextOriginality(patch.level2, context);
   const metadata = validateEditorialMetadata(patch, context);
@@ -321,25 +438,37 @@ async function validateEditorial(event, patch) {
 }
 
 async function syncNow({ force = false } = {}) {
-  if (!force && syncCache && Date.now() - syncCache.createdAt < cacheTtlMs) return { ...syncCache.value, cached: true };
+  if (!force && syncCache && Date.now() - syncCache.createdAt < cacheTtlMs)
+    return { ...syncCache.value, cached: true };
   if (syncPromise) return syncPromise;
   syncPromise = (async () => {
-    const value = await synchronize(SOURCES, { knownEvents: await store.listEvents(), feedLimit, maxGroups, windowHours });
+    const value = await synchronize(SOURCES, {
+      knownEvents: await store.listEvents(),
+      feedLimit,
+      maxGroups,
+      windowHours,
+    });
     const { validationContexts, ...summary } = value;
     const events = await store.mergeSynchronization(summary, validationContexts);
     const result = { ...summary, events, cached: false };
     syncCache = { value: result, createdAt: Date.now() };
     lastSchedulerError = null;
     return result;
-  })().catch((error) => {
-    lastSchedulerError = { message: error.message, at: new Date().toISOString() };
-    throw error;
-  }).finally(() => { syncPromise = null; });
+  })()
+    .catch((error) => {
+      lastSchedulerError = { message: error.message, at: new Date().toISOString() };
+      throw error;
+    })
+    .finally(() => {
+      syncPromise = null;
+    });
   return syncPromise;
 }
 
 function runScheduledSync() {
-  syncNow({ force: true }).catch((error) => console.error("Automatyczna synchronizacja nie powiodła się:", error.message));
+  syncNow({ force: true }).catch((error) =>
+    console.error("Automatyczna synchronizacja nie powiodła się:", error.message),
+  );
 }
 
 function startScheduler() {
@@ -350,24 +479,54 @@ function startScheduler() {
 }
 
 function requiresAdminStatic(pathname) {
-  return ["/", "/admin", "/index.html", "/app.js", "/styles.css"].includes(pathname);
+  if (["/", "/admin", "/index.html"].includes(pathname)) return true;
+  // Pliki nalezace wylacznie do panelu zostaja za haslem, tak jak przed
+  // migracja. Wspolny fragment kodu jest uzywany takze przez feed, wiec
+  // pozostaje publiczny.
+  return panelAssets.has(pathname);
 }
 
 function requiresAdminApi(pathname) {
-  return pathname === "/api/editorial/events" || pathname === "/api/editorial" || pathname === "/api/validate" || pathname === "/api/sync";
+  return (
+    pathname === "/api/editorial/events" ||
+    pathname === "/api/editorial" ||
+    pathname === "/api/validate" ||
+    pathname === "/api/sync"
+  );
+}
+
+/**
+ * Wybiera plik z katalogu builda. Adresy /assets sa ograniczone do jednego
+ * poziomu i bezpiecznego zestawu znakow, wiec nie da sie wyjsc poza dist.
+ */
+function resolveStaticFile(pathname) {
+  const mapped = staticFiles.get(pathname);
+  if (mapped) return path.join(distDir, mapped);
+  if (ASSET_PATH.test(pathname)) return path.join(distDir, pathname.slice(1));
+  return null;
+}
+
+function cacheControlFor(pathname, extension) {
+  if (extension === ".html") return "no-cache";
+  // Service worker musi byc sprawdzany przy kazdym wejsciu, inaczej nowa wersja
+  // aplikacji nigdy nie zostanie zauwazona.
+  if (pathname === "/sw.js") return "no-cache";
+  // Pliki z hashem tresci w nazwie sa niezmienne.
+  if (ASSET_PATH.test(pathname)) return "public, max-age=31536000, immutable";
+  return "public, max-age=300";
 }
 
 async function serveStatic(requestPath, response, isHead = false) {
-  const fileName = staticFiles.get(requestPath);
-  if (!fileName) return sendJson(response, 404, { error: "Nie znaleziono zasobu" });
-  const target = path.join(root, fileName);
+  const target = resolveStaticFile(requestPath);
+  if (!target) return sendJson(response, 404, { error: "Nie znaleziono zasobu" });
+  const extension = path.extname(target);
   try {
     const content = await readFile(target);
     response.writeHead(200, {
-      "content-type": contentTypes[path.extname(target)] || "application/octet-stream",
-      "cache-control": path.extname(target) === ".html" ? "no-cache" : "public, max-age=300",
+      "content-type": contentTypes[extension] || "application/octet-stream",
+      "cache-control": cacheControlFor(requestPath, extension),
       "x-content-type-options": "nosniff",
-      "content-security-policy": "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; frame-ancestors 'none'",
+      "content-security-policy": STATIC_CSP,
       "referrer-policy": "no-referrer",
     });
     response.end(isHead ? undefined : content);
@@ -381,8 +540,13 @@ const server = createServer(async (request, response) => {
   if (!allowedHosts.has(host)) return sendJson(response, 403, { error: "Niedozwolony Host" });
   const url = new URL(request.url || "/", `http://${host}`);
   try {
-    if ((requiresAdminStatic(url.pathname) || requiresAdminApi(url.pathname)) && !isTrustedHttpsRequest(request)) {
-      return sendJson(response, 426, { error: "Panel i API redakcyjne są dostępne wyłącznie przez zaufany reverse proxy HTTPS" });
+    if (
+      (requiresAdminStatic(url.pathname) || requiresAdminApi(url.pathname)) &&
+      !isTrustedHttpsRequest(request)
+    ) {
+      return sendJson(response, 426, {
+        error: "Panel i API redakcyjne są dostępne wyłącznie przez zaufany reverse proxy HTTPS",
+      });
     }
     if (request.method === "GET" && url.pathname === "/api/health") {
       return sendJson(response, 200, {
@@ -390,7 +554,13 @@ const server = createServer(async (request, response) => {
         sources: SOURCES.length,
         publications: (await store.listPublications()).length,
         events: (await store.listEvents()).length,
-        reactions: Object.values(await store.getReactionCounts()).reduce((sum, counts) => ({ likes: sum.likes + counts.likes, dislikes: sum.dislikes + counts.dislikes }), { likes: 0, dislikes: 0 }),
+        reactions: Object.values(await store.getReactionCounts()).reduce(
+          (sum, counts) => ({
+            likes: sum.likes + counts.likes,
+            dislikes: sum.dislikes + counts.dislikes,
+          }),
+          { likes: 0, dislikes: 0 },
+        ),
         autoSyncEnabled,
         syncIntervalMinutes,
         windowHours,
@@ -410,8 +580,19 @@ const server = createServer(async (request, response) => {
     }
     if (request.method === "GET" && url.pathname === "/api/public/feed") {
       const publications = await store.listPublications();
-      const items = await Promise.all(publications.map(async (item) => ({ ...item, reactions: await store.getReaction(item.id), image: item.image ? { ...item.image, url: proxiedImageUrl(item.image.url) } : null })));
-      return sendJson(response, 200, { items, generatedAt: new Date().toISOString() }, "public, max-age=30");
+      const items = await Promise.all(
+        publications.map(async (item) => ({
+          ...item,
+          reactions: await store.getReaction(item.id),
+          image: item.image ? { ...item.image, url: proxiedImageUrl(item.image.url) } : null,
+        })),
+      );
+      return sendJson(
+        response,
+        200,
+        { items, generatedAt: new Date().toISOString() },
+        "public, max-age=30",
+      );
     }
     // Proxy obrazkow: klient nigdy nie laczy sie z serwerem wydawcy. Adres
     // wejsciowy musi naleze do jakiegos wydarzenia/publikacji w bazie, inaczej
@@ -419,7 +600,8 @@ const server = createServer(async (request, response) => {
     if (["GET", "HEAD"].includes(request.method || "") && url.pathname === "/img") {
       const sourceUrl = url.searchParams.get("u") || "";
       const variant = url.searchParams.get("v") === "thumb" ? "thumb" : "full";
-      if (!sourceUrl || !(await store.isKnownImageUrl(sourceUrl))) return sendJson(response, 404, { error: "Nieznany obrazek" });
+      if (!sourceUrl || !(await store.isKnownImageUrl(sourceUrl)))
+        return sendJson(response, 404, { error: "Nieznany obrazek" });
       try {
         const webp = await imageProxy.getWebp(sourceUrl, variant);
         response.writeHead(200, {
@@ -430,7 +612,10 @@ const server = createServer(async (request, response) => {
         return response.end(request.method === "HEAD" ? undefined : webp);
       } catch (error) {
         const status = error instanceof ImageProxyError ? error.statusCode : 502;
-        return sendJson(response, status, { error: "Nie udało się przygotować obrazka", detail: error.message });
+        return sendJson(response, status, {
+          error: "Nie udało się przygotować obrazka",
+          detail: error.message,
+        });
       }
     }
     // Publiczny zapis oceny. Bez identyfikatorow: klient przesyla zmiane wlasnego
@@ -440,7 +625,8 @@ const server = createServer(async (request, response) => {
       const origin = request.headers.origin;
       if (origin) {
         try {
-          if (new URL(origin).host !== host) return sendJson(response, 403, { error: "Niedozwolone źródło żądania" });
+          if (new URL(origin).host !== host)
+            return sendJson(response, 403, { error: "Niedozwolone źródło żądania" });
         } catch {
           return sendJson(response, 403, { error: "Nieprawidłowy nagłówek Origin" });
         }
@@ -453,82 +639,136 @@ const server = createServer(async (request, response) => {
       const allowed = new Set(["like", "dislike", ""]);
       const from = allowed.has(body.from) ? body.from : "";
       const to = allowed.has(body.to) ? body.to : "";
-      if (!id || (!from && !to) || from === to) return sendJson(response, 400, { error: "Nieprawidłowa ocena" });
+      if (!id || (!from && !to) || from === to)
+        return sendJson(response, 400, { error: "Nieprawidłowa ocena" });
       const counts = await store.recordReaction(id, from, to);
-      if (!counts) return sendJson(response, 404, { error: "Nie znaleziono opublikowanego materiału" });
+      if (!counts)
+        return sendJson(response, 404, { error: "Nie znaleziono opublikowanego materiału" });
       return sendJson(response, 200, { id, reactions: counts });
     }
     if (request.method === "GET" && url.pathname === "/api/editorial/events") {
       if (!isAdmin(request)) return sendUnauthorized(response);
-      return sendJson(response, 200, { events: await store.listEvents(), reactions: await store.getReactionCounts(), lastSync: await store.getLastSync() });
+      return sendJson(response, 200, {
+        events: await store.listEvents(),
+        reactions: await store.getReactionCounts(),
+        lastSync: await store.getLastSync(),
+      });
     }
     if (request.method === "POST" && url.pathname === "/api/sync") {
-      if (!isAuthorizedAction(request, "sync")) return sendJson(response, 403, { error: "Niedozwolone żądanie synchronizacji" });
+      if (!isAuthorizedAction(request, "sync"))
+        return sendJson(response, 403, { error: "Niedozwolone żądanie synchronizacji" });
       return sendJson(response, 200, await syncNow({ force: true }));
     }
     if (request.method === "POST" && url.pathname === "/api/validate") {
-      if (!isAuthorizedAction(request, "validate")) return sendJson(response, 403, { error: "Niedozwolone żądanie walidacji" });
+      if (!isAuthorizedAction(request, "validate"))
+        return sendJson(response, 403, { error: "Niedozwolone żądanie walidacji" });
       const body = await readJsonBody(request);
-      const validationId = typeof body.validationId === "string" ? body.validationId.slice(0, 100) : "";
+      const validationId =
+        typeof body.validationId === "string" ? body.validationId.slice(0, 100) : "";
       const text = typeof body.text === "string" ? body.text.trim() : "";
       const field = body.field === "level2" ? "level2" : "level1";
-      if (!validationId || !text || text.length > 2_500) return sendJson(response, 400, { error: "Nieprawidłowy identyfikator lub tekst" });
+      if (!validationId || !text || text.length > 2_500)
+        return sendJson(response, 400, { error: "Nieprawidłowy identyfikator lub tekst" });
       const context = await store.getValidationContext(validationId);
-      if (!context) return sendJson(response, 409, { error: "Kontekst źródłowy wygasł. Wykonaj ponowną synchronizację." });
-      return sendJson(response, 200, field === "level2" ? validateContextOriginality(text, context) : validateOriginality(text, context));
+      if (!context)
+        return sendJson(response, 409, {
+          error: "Kontekst źródłowy wygasł. Wykonaj ponowną synchronizację.",
+        });
+      return sendJson(
+        response,
+        200,
+        field === "level2"
+          ? validateContextOriginality(text, context)
+          : validateOriginality(text, context),
+      );
     }
     if (request.method === "POST" && url.pathname === "/api/editorial") {
-      if (!isAuthorizedAction(request, "editorial")) return sendJson(response, 403, { error: "Niedozwolona operacja redakcyjna" });
+      if (!isAuthorizedAction(request, "editorial"))
+        return sendJson(response, 403, { error: "Niedozwolona operacja redakcyjna" });
       const body = await readJsonBody(request);
       const eventId = typeof body.eventId === "string" ? body.eventId.slice(0, 100) : "";
-      const action = ["save", "approve", "reject", "publish", "reopen", "regenerate"].includes(body.action) ? body.action : "";
+      const action = ["save", "approve", "reject", "publish", "reopen", "regenerate"].includes(
+        body.action,
+      )
+        ? body.action
+        : "";
       const event = await store.getEvent(eventId);
-      if (!event || !action) return sendJson(response, 404, { error: "Nie znaleziono materiału lub akcji" });
+      if (!event || !action)
+        return sendJson(response, 404, { error: "Nie znaleziono materiału lub akcji" });
 
       if (action === "regenerate") {
         const context = await store.getValidationContext(event.validationId || event.id);
-        if (!context) return sendJson(response, 409, { error: "Brak kontekstu źródłowego. Uruchom ponowną synchronizację." });
-        if (regenerating.has(eventId)) return sendJson(response, 409, { error: "Generowanie tego materiału już trwa" });
+        if (!context)
+          return sendJson(response, 409, {
+            error: "Brak kontekstu źródłowego. Uruchom ponowną synchronizację.",
+          });
+        if (regenerating.has(eventId))
+          return sendJson(response, 409, { error: "Generowanie tego materiału już trwa" });
         regenerating.add(eventId);
         try {
-          const claims = Array.isArray(event.verification?.sharedClaims) ? event.verification.sharedClaims : [];
-          const generated = await generateEditorialPackage({ claims, sourceTexts: context.sourceTexts || [] });
+          const claims = Array.isArray(event.verification?.sharedClaims)
+            ? event.verification.sharedClaims
+            : [];
+          const generated = await generateEditorialPackage({
+            claims,
+            sourceTexts: context.sourceTexts || [],
+          });
           const updated = await store.applyGeneration(eventId, generated);
-          return sendJson(response, 200, { event: updated, generation: { status: generated.status, reason: generated.reason } });
+          return sendJson(response, 200, {
+            event: updated,
+            generation: { status: generated.status, reason: generated.reason },
+          });
         } finally {
           regenerating.delete(eventId);
         }
       }
 
-      if (action === "reject") return sendJson(response, 200, { event: await store.setStatus(eventId, "rejected") });
-      if (action === "reopen") return sendJson(response, 200, { event: await store.setStatus(eventId, "review") });
+      if (action === "reject")
+        return sendJson(response, 200, { event: await store.setStatus(eventId, "rejected") });
+      if (action === "reopen")
+        return sendJson(response, 200, { event: await store.setStatus(eventId, "review") });
       if (action === "publish") {
         const publication = await store.publish(eventId);
-        if (!publication) return sendJson(response, 409, { error: "Publikacja wymaga wcześniejszej akceptacji materiału" });
+        if (!publication)
+          return sendJson(response, 409, {
+            error: "Publikacja wymaga wcześniejszej akceptacji materiału",
+          });
         return sendJson(response, 200, { publication, event: await store.getEvent(eventId) });
       }
 
       const patch = editorialPayload(body);
       const validation = await validateEditorial(event, patch);
-      if (!validation.valid && action === "approve") return sendJson(response, 422, { error: "Materiał nie spełnia zasad redakcyjnych", validation });
+      if (!validation.valid && action === "approve")
+        return sendJson(response, 422, {
+          error: "Materiał nie spełnia zasad redakcyjnych",
+          validation,
+        });
       await store.updateEditorial(eventId, { ...patch, validation, resetDecision: true });
       if (action === "approve") await store.setStatus(eventId, "approved");
       return sendJson(response, 200, { event: await store.getEvent(eventId), validation });
     }
-    if (!["GET", "HEAD"].includes(request.method || "")) return sendJson(response, 405, { error: "Metoda niedozwolona" });
+    if (!["GET", "HEAD"].includes(request.method || ""))
+      return sendJson(response, 405, { error: "Metoda niedozwolona" });
     if (requiresAdminStatic(url.pathname) && !isAdmin(request)) return sendUnauthorized(response);
     return serveStatic(url.pathname, response, request.method === "HEAD");
   } catch (error) {
     console.error("Request failed:", error);
-    return sendJson(response, error.statusCode || 500, { error: "Żądanie nie powiodło się", detail: error.message });
+    return sendJson(response, error.statusCode || 500, {
+      error: "Żądanie nie powiodło się",
+      detail: error.message,
+    });
   }
 });
 
 server.listen(port, listenHost, () => {
   console.log(`Telegram Redakcja — panel: http://localhost:${port}/`);
   console.log(`Telegram Redakcja — feed: http://localhost:${port}/feed`);
-  console.log(`Automatyczna synchronizacja: ${autoSyncEnabled ? `co ${syncIntervalMinutes} min` : "WYŁĄCZONA"}`);
-  console.log(`Zakres wiadomości: ${windowHours} h, do ${feedLimit} pozycji na kanał, do ${maxGroups} wydarzeń na przebieg`);
+  console.log(
+    `Automatyczna synchronizacja: ${autoSyncEnabled ? `co ${syncIntervalMinutes} min` : "WYŁĄCZONA"}`,
+  );
+  console.log(
+    `Zakres wiadomości: ${windowHours} h, do ${feedLimit} pozycji na kanał, do ${maxGroups} wydarzeń na przebieg`,
+  );
   startScheduler();
 });
 
