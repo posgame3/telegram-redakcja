@@ -61,7 +61,7 @@ describe("feed — kolejka trybu pełnoekranowego pomija przeczytane", () => {
     render(<App />);
     await openFirst();
 
-    await userEvent.click(screen.getByRole("button", { name: "Następna wiadomość" }));
+    await userEvent.keyboard("{ArrowRight}");
 
     await waitFor(() => expect(position()).toBe("2 z 3"));
     expect(seenIds()).toContain("a1");
@@ -79,7 +79,7 @@ describe("feed — kolejka trybu pełnoekranowego pomija przeczytane", () => {
   it("po ponownym otwarciu w kolejce zostają tylko nieprzeczytane", async () => {
     render(<App />);
     await openFirst();
-    await userEvent.click(screen.getByRole("button", { name: "Następna wiadomość" }));
+    await userEvent.keyboard("{ArrowRight}");
     await waitFor(() => expect(position()).toBe("2 z 3"));
     await userEvent.click(screen.getByRole("button", { name: "Zamknij" }));
 
@@ -107,7 +107,7 @@ describe("feed — kolejka trybu pełnoekranowego pomija przeczytane", () => {
     render(<App />);
     await openFirst();
 
-    await userEvent.click(screen.getByRole("button", { name: "Oceń pozytywnie" }));
+    await userEvent.keyboard("{ArrowUp}");
 
     await waitFor(() => expect(seenIds()).toContain("a1"));
   });
@@ -184,7 +184,7 @@ describe("feed — oceny", () => {
     render(<App />);
     await openFirst();
 
-    await userEvent.click(screen.getByRole("button", { name: "Oceń pozytywnie" }));
+    await userEvent.keyboard("{ArrowUp}");
 
     await waitFor(() => expect(reportReaction).toHaveBeenCalledWith("a1", "", "like"));
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.reactions) ?? "{}") as Record<
@@ -200,27 +200,26 @@ describe("feed — oceny", () => {
     await waitFor(() => expect(rows()).toHaveLength(1));
     await userEvent.click(rows()[0]!.querySelector("button")!);
 
-    await userEvent.click(screen.getByRole("button", { name: "Oceń pozytywnie" }));
+    await userEvent.keyboard("{ArrowUp}");
     await waitFor(() => expect(reportReaction).toHaveBeenCalledWith("a1", "", "like"));
-    await userEvent.click(screen.getByRole("button", { name: "Oceń pozytywnie" }));
+    await userEvent.keyboard("{ArrowUp}");
 
     await waitFor(() => expect(reportReaction).toHaveBeenLastCalledWith("a1", "like", ""));
   });
 
-  it("pokazuje liczniki zwrócone przez serwer", async () => {
+  it("zapisuje liczniki zwrócone przez serwer w danych materiału", async () => {
     fetchPublicFeed.mockResolvedValue(feedOf([items[0]!]));
     reportReaction.mockResolvedValue({ likes: 7, dislikes: 2 });
     render(<App />);
     await waitFor(() => expect(rows()).toHaveLength(1));
     await userEvent.click(rows()[0]!.querySelector("button")!);
 
-    await userEvent.click(screen.getByRole("button", { name: "Oceń pozytywnie" }));
+    await userEvent.keyboard("{ArrowUp}");
 
-    // Licznik dochodzi dopiero po odpowiedzi serwera, wiec czekamy na tresc,
-    // a nie tylko na obecnosc przycisku.
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Oceń pozytywnie" })).toHaveTextContent("▲ Tak 7"),
-    );
+    // Wlasny glos (▲/▼) jest widoczny w metadanych karty; sumaryczne liczniki
+    // z serwera nie sa juz pokazywane w czytniku, ale musi dojsc do zapisu.
+    await waitFor(() => expect(reportReaction).toHaveBeenCalledWith("a1", "", "like"));
+    expect(screen.getByRole("dialog")).toHaveTextContent("▲ Podoba się");
   });
 });
 

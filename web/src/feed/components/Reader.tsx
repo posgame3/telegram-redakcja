@@ -124,7 +124,6 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
     }
   };
 
-  const counts = current?.reactions ?? { likes: 0, dislikes: 0 };
   const published = current?.publishedAt ?? current?.updatedAt ?? null;
 
   return (
@@ -199,13 +198,6 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
               </div>
               <h1 id="reader-title">{headlineOf(current)}</h1>
               {current.level2 && <p className="reader-deck">{current.level2}</p>}
-              <button
-                className="reader-more"
-                type="button"
-                onClick={() => setSheetSource(current.id)}
-              >
-                Sprawdź źródła
-              </button>
               <p className="reader-hint">
                 Przesuń w górę, aby ocenić pozytywnie. W dół, aby ocenić negatywnie. W prawo, aby
                 przejść dalej. Dotknij zdjęcia, aby je powiększyć.
@@ -221,40 +213,17 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
 
       <PhotoDialog item={photoItem} onClose={() => setPhotoSource(null)} />
 
-      <div className="reader-actions">
-        <button
-          type="button"
-          aria-label="Poprzednia wiadomość"
-          disabled={!reader.hasPrevious}
-          onClick={() => reader.move(-1)}
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          aria-label="Oceń negatywnie"
-          data-active={ratingLabel.startsWith("▼")}
-          onClick={() => reader.rate("dislike")}
-        >
-          {counts.dislikes ? `▼ Nie ${counts.dislikes}` : "▼ Nie"}
-        </button>
-        <button
-          type="button"
-          aria-label="Oceń pozytywnie"
-          data-active={ratingLabel.startsWith("▲")}
-          onClick={() => reader.rate("like")}
-        >
-          {counts.likes ? `▲ Tak ${counts.likes}` : "▲ Tak"}
-        </button>
-        <button
-          type="button"
-          aria-label="Następna wiadomość"
-          disabled={!reader.hasNext}
-          onClick={() => reader.move(1)}
-        >
-          →
-        </button>
-      </div>
+      {/* Nawigacja i oceny dzialaja juz przez gesty (przesuniecie karty), wiec
+          na dole zostaje tylko dostep do zrodel - bez duplikujacych przyciskow,
+          ktorych tekst zawijal sie na waskich ekranach. */}
+      <button
+        className="reader-more"
+        type="button"
+        disabled={!current}
+        onClick={() => current && setSheetSource(current.id)}
+      >
+        Sprawdź źródła
+      </button>
     </section>
   );
 }

@@ -177,8 +177,19 @@
     display: none;
   }
 }
-.reader-more {
+/* Wewnatrz karty: zapowiedz kontekstu przed pelna trescia. */
+.reader-body .reader-more {
   margin-top: auto;
+}
+/* Na dole ekranu: jedyny pozostajacy przycisk po usunieciu paska nawigacji
+   i ocen - te dzialaja teraz przez gest przesuniecia karty. */
+.reader > .reader-more {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  padding: 13px 14px max(13px, env(safe-area-inset-bottom));
+}
+.reader-more {
   border: 1px solid var(--rule);
   padding: 13px;
   background: var(--ink);
@@ -188,6 +199,10 @@
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+.reader-more:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 .reader-hint {
   margin: 0;
@@ -222,32 +237,4 @@
   border-color: var(--ink-soft);
   color: var(--ink-soft);
   transform: rotate(9deg);
-}
-.reader-actions {
-  display: grid;
-  grid-template-columns: 52px 1fr 1fr 52px;
-  gap: 6px;
-  border-top: 1px solid var(--rule);
-  padding: 10px 14px max(10px, env(safe-area-inset-bottom));
-  background: var(--paper);
-}
-.reader-actions button {
-  border: 1px solid var(--rule);
-  padding: 14px 8px;
-  background: var(--surface);
-  cursor: pointer;
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.reader-actions button:disabled {
-  color: var(--ink-soft);
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-.reader-actions button[data-active="true"] {
-  background: var(--ink);
-  color: var(--paper);
 }

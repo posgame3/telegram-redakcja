@@ -107,8 +107,7 @@
   .reader-stage {
     padding: 22px;
   }
-  .reader-card,
-  .reader-actions {
+  .reader-card {
     max-width: 720px;
     margin-inline: auto;
   }
@@ -117,8 +116,10 @@
     inset: 22px 0;
     margin-inline: auto;
   }
-  .reader-actions {
+  .reader > .reader-more {
+    max-width: 720px;
     width: 100%;
+    margin-inline: auto;
   }
 }
 
