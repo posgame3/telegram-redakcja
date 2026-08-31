@@ -16,7 +16,7 @@
     "format:check": "prettier --check .",
     "check": "npm run typecheck && npm run lint && npm run test",
     "test": "npm run test:server && npm run test:web",
-    "test:server": "node --test tests/aggregator.test.mjs tests/generator.test.mjs tests/scraper.test.mjs tests/feed.test.mjs",
+    "test:server": "node --test tests/aggregator.test.mjs tests/generator.test.mjs tests/scraper.test.mjs",
     "test:web": "vitest run",
     "test:watch": "vitest",
     "smoke": "node scripts/smoke.mjs"

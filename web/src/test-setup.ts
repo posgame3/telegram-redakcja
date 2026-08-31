@@ -18,6 +18,12 @@ beforeAll(() => {
     });
   }
 
+  // jsdom nie implementuje przewijania, a aplikacja doprowadza do widoku
+  // wybrany dzial i edytowany material.
+  if (typeof window.Element.prototype.scrollIntoView !== "function") {
+    window.Element.prototype.scrollIntoView = () => {};
+  }
+
   // jsdom nie implementuje trybu modalnego elementu <dialog>. Podgladu zrodla
   // i podgladu zdjecia nie da sie bez tego przetestowac.
   const dialog = window.HTMLDialogElement.prototype;
