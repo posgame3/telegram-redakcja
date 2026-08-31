@@ -1,0 +1,166 @@
+/* Edytor materialu: pola tekstowe, liczniki slow i pasek decyzji. */
+
+.editor-head {
+  align-items: flex-start;
+  padding-bottom: 21px;
+  border-bottom: 2px solid var(--border);
+}
+.status[data-status="review"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.status[data-status="approved"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.status[data-status="published"] {
+  background: var(--chart-1);
+  color: var(--primary-foreground);
+}
+.status[data-status="rejected"] {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.event-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 0 28px;
+  border-bottom: 1px solid var(--border);
+}
+.event-meta div {
+  padding: 14px 0;
+}
+.event-meta div + div {
+  border-left: 1px solid var(--border);
+  padding-left: 16px;
+}
+.event-meta dt {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.event-meta dd {
+  margin: 5px 0 0;
+  font-weight: 700;
+}
+
+.field-head {
+  margin-bottom: 9px;
+}
+.field-head label {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+}
+.word-count {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.word-count.is-valid {
+  color: var(--chart-1);
+  font-weight: 700;
+}
+.word-count.is-invalid {
+  color: var(--destructive);
+  font-weight: 700;
+}
+
+.editorial-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+.editorial-field {
+  display: grid;
+  gap: 6px;
+}
+.editorial-field-wide {
+  grid-column: 1 / -1;
+}
+.editorial-field span {
+  color: var(--muted-foreground);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.editorial-field input,
+.editorial-field select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 9px 11px;
+  background: var(--card);
+  color: var(--card-foreground);
+}
+.editorial-field-wide input {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 700;
+}
+.editorial-field input:disabled,
+.editorial-field select:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.level-two-head {
+  margin-top: 5px;
+}
+#context-text {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  background: var(--card);
+  color: var(--card-foreground);
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+textarea:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.field-help {
+  margin: 9px 0 24px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.decision-bar {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.secondary-actions,
+.primary-actions {
+  display: flex;
+  gap: 8px;
+}
+.decision-note {
+  margin-top: 20px;
+  border-left: 4px solid var(--border);
+  padding: 11px 13px;
+  background: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.decision-note.is-approved {
+  border-left-color: var(--chart-2);
+}
+.decision-note.is-rejected {
+  border-left-color: var(--destructive);
+}
+.is-hidden {
+  display: none;
+}

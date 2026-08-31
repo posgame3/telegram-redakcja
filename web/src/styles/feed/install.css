@@ -1,0 +1,76 @@
+/* Okno instalacji aplikacji. */
+
+/* --- Okno instalacji --- */
+.install-dialog {
+  max-width: 540px;
+  width: calc(100vw - 24px);
+  border: 1px solid var(--rule);
+  padding: 0;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 5px 5px 0 var(--rule-soft);
+}
+.install-dialog::backdrop {
+  background: oklch(0.21 0.012 60 / 0.62);
+}
+.install-panel {
+  padding: 20px;
+}
+.install-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 3px double var(--rule);
+  padding-bottom: 12px;
+}
+.install-head h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.install-head button {
+  border: 1px solid var(--rule);
+  padding: 7px 11px;
+  background: var(--paper);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.install-lead {
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+.install-primary {
+  width: 100%;
+  margin-bottom: 18px;
+  border: 1px solid var(--rule);
+  padding: 14px;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.install-steps section {
+  margin-bottom: 18px;
+}
+.install-steps h3 {
+  margin: 0 0 8px;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.install-steps ol {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 7px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+}

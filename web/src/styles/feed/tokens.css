@@ -1,0 +1,31 @@
+/* Zmienne wygladu starej gazety dla trybu jasnego i ciemnego. */
+
+/* Wyglad starej gazety: papier w kolorze kremowym, czarny tusz, wloskowe linie,
+   szeryfowa typografia, wersaliki w etykietach dzialow i inicjal w czytniku.
+   Kolory trzymamy w zmiennych, zeby tryb jasny i ciemny dzialaly bez wyjatkow. */
+:root {
+  --paper: oklch(0.95 0.018 88);
+  --paper-deep: oklch(0.92 0.022 86);
+  --surface: oklch(0.97 0.014 90);
+  --ink: oklch(0.21 0.012 60);
+  --ink-soft: oklch(0.42 0.014 62);
+  --rule: oklch(0.28 0.014 60);
+  --rule-soft: oklch(0.72 0.016 78);
+  --accent: oklch(0.42 0.13 28);
+  --accent-ink: oklch(0.97 0.014 90);
+  --focus: oklch(0.55 0.14 250);
+  --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  --sans: "Helvetica Neue", Arial, sans-serif;
+}
+[data-theme="dark"] {
+  --paper: oklch(0.17 0.008 60);
+  --paper-deep: oklch(0.14 0.008 60);
+  --surface: oklch(0.21 0.009 60);
+  --ink: oklch(0.93 0.008 88);
+  --ink-soft: oklch(0.74 0.012 84);
+  --rule: oklch(0.62 0.012 80);
+  --rule-soft: oklch(0.34 0.01 70);
+  --accent: oklch(0.72 0.13 32);
+  --accent-ink: oklch(0.16 0.01 60);
+  --focus: oklch(0.78 0.13 240);
+}

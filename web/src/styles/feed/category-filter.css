@@ -1,0 +1,62 @@
+/* Pasek dzialow przewijany w bok. */
+
+/* --- Dzialy --- */
+/* 8 przyciskow nie miesci sie na waskim ekranie, wiec pasek przewija sie w bok.
+   mask-image wygasza prawa (i lewa, gdy nie jestesmy na starcie) krawedz,
+   zeby bylo widac, ze kategorie "wychodza" poza ekran i da sie je przewinac —
+   bez tego wygladalo to jak przyciski, ktore po prostu nie zmiescily sie. */
+.category-filter {
+  position: sticky;
+  z-index: 9;
+  top: 0;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 18px;
+  background: color-mix(in oklch, var(--paper) 94%, transparent);
+  backdrop-filter: blur(8px);
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 18px,
+    black calc(100% - 28px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 18px,
+    black calc(100% - 28px),
+    transparent
+  );
+}
+.category-filter::-webkit-scrollbar {
+  display: none;
+}
+.category-filter button {
+  flex: 0 0 auto;
+  border: 1px solid transparent;
+  padding: 7px 11px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.category-filter button:hover {
+  border-color: var(--rule-soft);
+}
+.category-filter button.is-active {
+  border-color: var(--rule);
+  background: var(--ink);
+  color: var(--paper);
+}
+.category-filter button:first-child {
+  scroll-margin-left: 18px;
+}
+.category-filter button:last-child {
+  scroll-margin-right: 18px;
+}

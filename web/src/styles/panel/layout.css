@@ -1,0 +1,66 @@
+/* Siatka trzech kolumn i wspolne naglowki sekcji. */
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.78fr) minmax(420px, 1.55fr) minmax(280px, 0.9fr);
+  min-height: calc(100vh - 112px);
+}
+
+.queue,
+.editor,
+.evidence {
+  min-width: 0;
+  padding: 24px;
+}
+.queue {
+  border-right: 1px solid var(--border);
+  background: var(--sidebar);
+}
+.editor {
+  border-right: 1px solid var(--border);
+}
+
+.section-heading,
+.editor-head,
+.evidence-heading,
+.field-head,
+.decision-bar,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+h1,
+h2,
+p {
+  overflow-wrap: anywhere;
+}
+h1,
+h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+}
+h1 {
+  font-size: 25px;
+}
+h2 {
+  font-size: 23px;
+  line-height: 1.18;
+}
+.count-badge,
+.status {
+  border: 1px solid var(--border);
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 700;
+}

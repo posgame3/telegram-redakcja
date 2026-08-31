@@ -1,0 +1,65 @@
+/* Pasek gorny: znak redakcji, stan monitora i akcje globalne. */
+
+.topbar {
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+  align-items: center;
+  border-bottom: 2px solid var(--border);
+}
+
+.brand,
+.system-state,
+.topbar-actions {
+  padding: 14px 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 2px solid var(--border);
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 22px;
+  font-weight: 700;
+}
+.brand strong {
+  display: block;
+  font-size: 17px;
+  letter-spacing: 0.12em;
+}
+.brand small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+
+.system-state {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--chart-2);
+}
+.separator {
+  color: var(--border);
+}
+.topbar-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

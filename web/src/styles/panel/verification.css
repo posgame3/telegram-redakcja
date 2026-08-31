@@ -1,0 +1,59 @@
+/* Twierdzenia potwierdzone, rozbieznosci i opis metody. */
+
+.verification-section,
+.conflicts-section,
+.method-section {
+  margin-top: 28px;
+}
+.verification-list {
+  margin-top: 3px;
+}
+.verification-item {
+  border-bottom: 1px solid var(--border);
+  padding: 13px 0;
+}
+.verification-item p {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.verification-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 7px;
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.verification-item.is-conflict {
+  border-left: 3px solid var(--destructive);
+  padding-left: 10px;
+}
+.verification-empty {
+  margin: 12px 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.method-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: method;
+}
+.method-list li {
+  counter-increment: method;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0 12px 30px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.method-list li::before {
+  content: counter(method, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: 700;
+}

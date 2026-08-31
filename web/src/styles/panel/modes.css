@@ -1,0 +1,125 @@
+/* Tryb prosty kontra edycja oraz uklad dwuekranowy na telefonie. */
+
+@media (max-width: 1100px) {
+  .verification-section,
+  .conflicts-section,
+  .method-section {
+    margin-top: 0;
+  }
+}
+
+/* Tryb prosty kontra tryb edycji.
+   Domyslnie redaktor widzi tylko skrot, czytaj wiecej i decyzje. Kategoria,
+   tagi, kontrola oryginalnosci i cala kolumna zrodel pojawiaja sie po kliknieciu
+   EDYTUJ. Panel jest obslugiwany glownie z telefonu, wiec domyslny widok musi
+   byc maksymalnie krotki. */
+body:not(.is-editing) .edit-only {
+  display: none;
+}
+body:not(.is-editing) .evidence {
+  display: none;
+}
+body:not(.is-editing) .workspace {
+  grid-template-columns: minmax(260px, 0.85fr) minmax(420px, 2.1fr);
+}
+body:not(.is-editing) .editor {
+  border-right: 0;
+}
+.edit-toggle {
+  margin-left: auto;
+}
+body.is-editing .edit-toggle {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+@media (max-width: 760px) {
+  .edit-toggle {
+    margin-left: 0;
+  }
+  .field-head {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+textarea[readonly]:not(:disabled) {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Telefon: panel dziala jak dwa ekrany. Najpierw lista tematow, po wejsciu
+   material z wygenerowanym tekstem i decyzjami. Na szerokim ekranie nic sie
+   nie zmienia, bo obie kolumny sa widoczne jednoczesnie. */
+.back-to-queue {
+  display: none;
+}
+@media (max-width: 760px) {
+  /* Pasek gorny zajmowal prawie 200 px wysokosci przed pierwsza trescia. */
+  .topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+  .brand small {
+    display: none;
+  }
+  .topbar-actions {
+    border-top: 0;
+    justify-content: flex-end;
+  }
+  .topbar-actions .button {
+    padding: 9px 11px;
+    font-size: 10px;
+  }
+  .system-state {
+    order: 3;
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding-top: 7px;
+    font-size: 10px;
+  }
+  .back-to-queue {
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  body[data-view="list"] .editor,
+  body[data-view="list"] .evidence {
+    display: none;
+  }
+  body[data-view="detail"] .queue {
+    display: none;
+  }
+  .queue,
+  .editor {
+    border-bottom: 0;
+  }
+  .event-row-title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  .event-list {
+    max-height: none;
+    overflow: visible;
+  }
+  /* Naglowek jest tylko punktem orientacyjnym: pelny tekst jest w polu SKROT. */
+  .editor-head h2 {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 17px;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  /* Wygenerowany tekst czytamy w calosci, bez przewijania w polu. */
+  #telegram-text,
+  #context-text {
+    field-sizing: content;
+    min-height: 8em;
+  }
+}

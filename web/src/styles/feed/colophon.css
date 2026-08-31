@@ -1,0 +1,19 @@
+/* Stopka wydania. */
+
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  border-top: 3px double var(--rule);
+  padding: 18px;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.label-short {
+  display: none;
+}

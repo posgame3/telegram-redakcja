@@ -1,0 +1,53 @@
+/* Reset, ustawienia dokumentu i element pomijania nawigacji. */
+
+* {
+  box-sizing: border-box;
+}
+/* --base-font ustawia czytelnik przyciskami A- i A+; treść skaluje się w rem. */
+html {
+  color-scheme: light;
+  font-size: var(--base-font, 16px);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body.is-reading {
+  overflow: hidden;
+}
+button,
+a {
+  font: inherit;
+  color: inherit;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.skip-link {
+  position: fixed;
+  z-index: 40;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-160%);
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 13px;
+}
+.skip-link:focus {
+  transform: none;
+}

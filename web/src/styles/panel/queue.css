@@ -1,0 +1,106 @@
+/* Kolejka materialow: filtry statusu i wiersze listy. */
+
+.filters {
+  display: flex;
+  gap: 2px;
+  margin: 22px 0 12px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+.filter {
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 9px 8px;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 10px;
+}
+.filter.is-active {
+  border-bottom-color: var(--foreground);
+  font-weight: 700;
+}
+
+.event-list {
+  border-top: 1px solid var(--border);
+}
+.event-row {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 15px 4px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.event-row:hover {
+  background: var(--muted);
+}
+/* Status widoczny od razu przez kolor tla wiersza, nie tylko przez maly tekst -
+   zielone dla opublikowanych, czerwonawe dla odrzuconych, tak samo jak w edytorze. */
+.event-row[data-status="published"] {
+  padding-left: 0;
+  border-left: 4px solid var(--chart-1);
+  background: color-mix(in oklch, var(--chart-1) 14%, transparent);
+}
+.event-row[data-status="approved"] {
+  padding-left: 0;
+  border-left: 4px solid var(--primary);
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+}
+.event-row[data-status="rejected"] {
+  padding-left: 0;
+  border-left: 4px solid var(--destructive);
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+  opacity: 0.75;
+}
+.event-row[data-status="published"]:hover {
+  background: color-mix(in oklch, var(--chart-1) 22%, transparent);
+}
+.event-row[data-status="approved"]:hover {
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
+}
+.event-row[data-status="rejected"]:hover {
+  background: color-mix(in oklch, var(--destructive) 18%, transparent);
+}
+.event-row.is-selected {
+  padding-left: 11px;
+  border-left: 4px solid var(--primary);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.event-row-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.event-row-time,
+.event-row-status {
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.event-row-title {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.3;
+}
+/* Material bez wygenerowanej treści (model odrzucony przez kontrole
+   oryginalnosci albo brak wspolnych faktow) - wyrozniony, zeby redaktor
+   nie musial wchodzic w kazdy z osobna, by to zauwazyc. */
+.event-row[data-missing-content="true"] .event-row-title {
+  color: var(--destructive);
+  font-style: italic;
+}
+.event-row-meta {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.empty-state {
+  padding: 28px 6px;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}

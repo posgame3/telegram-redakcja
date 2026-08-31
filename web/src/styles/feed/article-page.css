@@ -1,0 +1,97 @@
+/* Strona pojedynczego telegramu, skladana po stronie serwera. */
+
+/* --- Strona pojedynczego telegramu, skladana po stronie serwera --- */
+.article-page .masthead {
+  padding: 14px 18px;
+}
+.article-page .masthead-title span {
+  font-size: clamp(26px, 6vw, 40px);
+}
+.article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 22px 18px 56px;
+}
+/* Wlasna klasa, a nie masthead-line: tamta ma regule mobilna ukrywajaca opisy. */
+.article-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.article-kicker span {
+  color: var(--accent);
+  font-weight: 700;
+}
+.article-media {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 22px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+.article-media img {
+  display: block;
+  width: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+.article-media figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 6px 10px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.article h1 {
+  margin: 0 0 20px;
+  font-family: var(--serif);
+  font-size: clamp(23px, 4.4vw, 34px);
+  font-weight: 700;
+  line-height: 1.22;
+}
+.article h1::first-letter {
+  color: var(--accent);
+}
+.article-context {
+  margin: 0 0 30px;
+  font-size: 1.08rem;
+  line-height: 1.75;
+  text-align: justify;
+  hyphens: auto;
+}
+.article-cta {
+  display: inline-block;
+  margin-top: 26px;
+  border: 1px solid var(--rule);
+  padding: 13px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.article-cta:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.share-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}

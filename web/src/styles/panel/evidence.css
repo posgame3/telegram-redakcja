@@ -1,0 +1,63 @@
+/* Kolumna dowodowa: zrodla i kontrola materialu. */
+
+.evidence-heading {
+  align-items: baseline;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 9px;
+}
+.evidence-heading h2 {
+  font-size: 17px;
+}
+.evidence-heading span {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.source-list {
+  margin-bottom: 30px;
+}
+.source-item {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+.source-domain {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.source-item a {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.source-item a:hover {
+  color: var(--primary);
+}
+.facts-section {
+  margin-top: 26px;
+}
+.facts-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.facts-list li {
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  padding: 13px 0 13px 19px;
+  line-height: 1.45;
+}
+.facts-list li::before {
+  content: "■";
+  position: absolute;
+  left: 0;
+  top: 15px;
+  color: var(--chart-1);
+  font-size: 8px;
+}

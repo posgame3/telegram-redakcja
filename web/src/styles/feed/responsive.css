@@ -1,0 +1,129 @@
+/* Uklad na telefonie, szerokie lamy gazetowe i ograniczenie ruchu. */
+
+/* Telefon: winieta zwezona do dwoch cienkich wierszy. Wczesniej zabierala
+   ponad 200 px, czyli caly pierwszy ekran przed pierwsza wiadomoscia.
+   display: contents wyciaga przyciski i czas z paska pomocniczego, zeby daly
+   sie ustawic w jednej linii z tytulem. */
+@media (max-width: 620px) {
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    padding: 8px 12px;
+    border-bottom-width: 2px;
+    text-align: left;
+  }
+  .masthead-utility {
+    display: contents;
+  }
+  .masthead-title {
+    order: 1;
+    margin: 0;
+  }
+  .masthead-title span {
+    font-size: 26px;
+    letter-spacing: 0.05em;
+  }
+  .masthead-buttons {
+    order: 2;
+    margin-left: auto;
+    gap: 4px;
+  }
+  .masthead-utility button {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  .font-control #font-level {
+    min-width: 38px;
+    font-size: 10px;
+  }
+  .label-long {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
+  .masthead-line {
+    order: 3;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    gap: 6px;
+    border-top: 0;
+    padding-top: 0;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .masthead-line span:not(#masthead-date) {
+    display: none;
+  }
+  #feed-updated {
+    order: 4;
+    flex: 0 0 auto;
+    margin-left: auto;
+    font-size: 10px;
+  }
+  .category-filter {
+    padding: 7px 12px;
+  }
+  .feed-item-button {
+    grid-template-columns: 104px 1fr;
+    gap: 12px;
+    padding: 14px 12px;
+  }
+  .colophon {
+    padding: 14px 12px;
+  }
+}
+
+/* Szerokie ekrany: prawdziwe lamy gazetowe. CSS columns sam rysuje wloskowa
+   linie w rynnie i sam ja usuwa, gdy liczba kolumn spada do jednej.
+   break-inside pilnuje, zeby wiadomosc nie pekala miedzy lamami. */
+@media (min-width: 1024px) {
+  .feed-list {
+    max-width: 1180px;
+    padding: 8px 24px 56px;
+    columns: 2;
+    column-gap: 44px;
+    column-rule: 1px solid var(--rule-soft);
+  }
+  .feed-item {
+    break-inside: avoid;
+  }
+  .feed-item-button {
+    padding: 16px 0;
+  }
+}
+
+@media (min-width: 1560px) {
+  .feed-list {
+    max-width: 1560px;
+    columns: 3;
+    column-gap: 40px;
+  }
+}
+
+@media (min-width: 900px) {
+  .reader-stage {
+    padding: 22px;
+  }
+  .reader-card,
+  .reader-actions {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .reader-sheet {
+    max-width: 720px;
+    inset: 22px 0;
+    margin-inline: auto;
+  }
+  .reader-actions {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-card {
+    transition: none !important;
+  }
+}
