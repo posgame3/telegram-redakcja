@@ -55,7 +55,14 @@ export default tseslint.config(
       ...sharedRules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      // Bazowa regula nie rozumie sygnatur typow (parametry w typach funkcji
+      // wygladaja dla niej jak nieuzywane zmienne), wiec zastepuje ja wersja
+      // swiadoma TypeScriptu.
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
     },
   },
 
