@@ -1,0 +1,18 @@
+# Zaleznosci
+node_modules/
+
+# Sekrety - realne wartosci zyja w /opt/telegram-redakcja/telegram.env na VPS
+.env
+.env.*
+!.env.example
+
+# Stan runtime: stary plik JSON (przed migracja na Supabase) i cache obrazkow
+data/
+state/
+
+# Build (po migracji na Vite)
+dist/
+
+# System
+.DS_Store
+*.log

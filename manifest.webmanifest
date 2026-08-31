@@ -1,0 +1,18 @@
+{
+  "name": "Stay Updated — Telegram",
+  "short_name": "Telegram",
+  "description": "Najważniejsze informacje z wielu źródeł w krótkiej formie.",
+  "start_url": "/feed",
+  "scope": "/",
+  "id": "/feed",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "categories": ["news", "magazines"],
+  "background_color": "#f2ede1",
+  "theme_color": "#1c1a16",
+  "lang": "pl",
+  "icons": [
+    { "src": "/telegram-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

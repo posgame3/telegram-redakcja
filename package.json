@@ -1,0 +1,22 @@
+{
+  "name": "telegram-redakcja-demo",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Trwały pipeline agregacji wiadomości, panel redakcyjny i publiczny feed PWA z wieloźródłową syntezą AI.",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check app.js && node --check feed.js && node --check sw.js && node --check server.mjs && node --check src/sources.mjs && node --check src/scraper.mjs && node --check src/aggregator.mjs && node --check src/generator.mjs && node --check src/store.mjs && node --check src/image-proxy.mjs",
+    "test": "node --test tests/aggregator.test.mjs tests/generator.test.mjs tests/scraper.test.mjs tests/feed.test.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@mozilla/readability": "0.6.0",
+    "@supabase/supabase-js": "^2.112.4",
+    "cheerio": "1.2.0",
+    "jsdom": "29.0.1",
+    "robots-parser": "3.0.1",
+    "sharp": "^0.35.4",
+    "ws": "^8.21.3"
+  }
+}

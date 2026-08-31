@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel redakcyjny do porównywania źródeł i zatwierdzania krótkich telegramów.">
+  <title>TELEGRAM — panel redakcyjny</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#editor">Przejdź do edytora</a>
+
+  <header class="topbar">
+    <div class="brand" aria-label="Telegram, panel redakcyjny">
+      <span class="brand-mark" aria-hidden="true">T.</span>
+      <div>
+        <strong>TELEGRAM</strong>
+        <small>PANEL REDAKCYJNY / MVP</small>
+      </div>
+    </div>
+
+    <div class="system-state" aria-label="Stan systemu">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span>MONITOR AKTYWNY</span>
+      <span class="separator" aria-hidden="true">/</span>
+      <span id="last-sync">OCZEKUJE NA ODCZYT</span>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="button button-ghost" id="theme-toggle" type="button" aria-label="Przełącz tryb kolorystyczny">TRYB: JASNY</button>
+      <button class="button button-primary" id="fetch-button" type="button">POBIERZ NOWE</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="queue" aria-labelledby="queue-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">01 / KOLEJKA</p>
+          <h1 id="queue-title">Wydarzenia</h1>
+        </div>
+        <span class="count-badge" id="queue-count">0</span>
+      </div>
+
+      <nav class="filters" aria-label="Filtry kolejki">
+        <button class="filter" type="button" data-filter="all">Wszystkie</button>
+        <button class="filter is-active" type="button" data-filter="review">Do decyzji</button>
+        <button class="filter" type="button" data-filter="approved">Przyjęte</button>
+        <button class="filter" type="button" data-filter="rejected">Odrzucone</button>
+        <button class="filter" type="button" data-filter="published">Opublikowane</button>
+      </nav>
+      <div class="event-list" id="event-list" aria-live="polite"></div>
+    </aside>
+
+    <section class="editor" id="editor" aria-labelledby="event-title">
+      <!-- Na telefonie panel dziala jak dwa ekrany: kolejka, potem material. -->
+      <button class="button button-ghost back-to-queue" id="back-to-queue" type="button">← Kolejka tematów</button>
+
+      <div class="editor-head">
+        <div>
+          <p class="kicker" id="event-number">02 / MATERIAŁ</p>
+          <h2 id="event-title">Wybierz wydarzenie</h2>
+        </div>
+        <span class="status" id="event-status">—</span>
+      </div>
+
+      <dl class="event-meta">
+        <div><dt>ŹRÓDŁA</dt><dd id="source-count">—</dd></div>
+        <div><dt>WYKRYTO</dt><dd id="detected-at">—</dd></div>
+        <div><dt>ZGODNOŚĆ</dt><dd id="confidence">—</dd></div>
+        <div><dt>OCENY CZYTELNIKÓW</dt><dd id="reader-reactions">—</dd></div>
+      </dl>
+
+      <form id="telegram-form">
+        <!-- Tytul jest generowany i walidowany po stronie serwera, redaktor go nie edytuje. -->
+        <input id="editorial-title" type="hidden" maxlength="180">
+
+        <div class="editorial-grid edit-only">
+          <label class="editorial-field" for="editorial-category">
+            <span>Kategoria</span>
+            <select id="editorial-category">
+              <option value="kraj">Kraj</option>
+              <option value="biznes">Biznes</option>
+              <option value="gospodarka">Gospodarka</option>
+              <option value="geopolityka">Geopolityka</option>
+              <option value="rynki">Rynki</option>
+              <option value="świat">Świat</option>
+              <option value="technologia">Technologia</option>
+              <option value="inne">Inne</option>
+            </select>
+          </label>
+          <label class="editorial-field" for="editorial-tags">
+            <span>Tagi — rozdziel przecinkami</span>
+            <input id="editorial-tags" maxlength="180" placeholder="nbp, stopy procentowe">
+          </label>
+        </div>
+
+        <div class="field-head">
+          <label for="telegram-text">SKRÓT</label>
+          <span id="word-count" class="word-count">0 / 20–30 słów</span>
+        </div>
+        <textarea id="telegram-text" rows="5" maxlength="500" placeholder="Najważniejsza informacja do przeczytania w 10–20 sekund."></textarea>
+        <p class="field-help" id="word-hint">Tekst musi mieć od 20 do 30 słów i przejść kontrolę źródłową.</p>
+
+        <div class="field-head level-two-head">
+          <label for="context-text">CZYTAJ WIĘCEJ</label>
+          <span id="context-word-count" class="word-count">0 / 60–140 słów</span>
+          <button class="button button-ghost edit-toggle" id="edit-button" type="button" aria-pressed="false">EDYTUJ</button>
+        </div>
+        <textarea id="context-text" rows="8" maxlength="2500" placeholder="Szerszy kontekst, liczby i znaczenie wydarzenia do przeczytania w 30–60 sekund."></textarea>
+        <p class="field-help" id="context-hint">Kontekst musi mieć od 60 do 140 słów i opierać się na potwierdzonych faktach.</p>
+
+        <section class="essence-trace edit-only" aria-labelledby="essence-title">
+          <div class="trace-label"><span id="essence-title">PODSTAWA ESENCJI</span><span id="essence-confidence">—</span></div>
+          <p id="essence-basis">Po synchronizacji zobaczysz fragment i źródła, na których oparto telegram.</p>
+          <p class="trace-sources" id="essence-sources"></p>
+          <div class="originality-check" aria-live="polite">
+            <div class="trace-label"><span>ORYGINALNOŚĆ TEKSTU</span><span id="generation-status">NIEZWERYFIKOWANY</span></div>
+            <p id="generation-reason">Zatwierdzenie będzie możliwe dopiero po kontroli tekstu względem pełnych artykułów.</p>
+            <dl class="originality-metrics">
+              <div><dt>NAJDŁUŻSZY WSPÓLNY FRAGMENT</dt><dd id="copy-run">—</dd></div>
+              <div><dt>POKRYCIE 4-WYRAZOWE</dt><dd id="ngram-overlap">—</dd></div>
+              <div><dt>POKRYCIE FAKTAMI</dt><dd id="grounding-score">—</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <div class="decision-bar">
+          <div class="secondary-actions">
+            <button class="button button-ghost edit-only" id="save-button" type="submit">ZAPISZ WERSJĘ</button>
+            <button class="button button-ghost" id="regenerate-button" type="button">WYGENERUJ PONOWNIE</button>
+            <button class="button button-ghost is-hidden" id="undo-button" type="button">COFNIJ DECYZJĘ</button>
+          </div>
+          <div class="primary-actions">
+            <button class="button button-danger" id="reject-button" type="button">ODRZUĆ</button>
+            <button class="button button-primary" id="approve-button" type="button">ZATWIERDŹ</button>
+            <button class="button button-publish" id="publish-button" type="button">PUBLIKUJ</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="decision-note" id="decision-note" role="status" aria-live="polite">
+        Materiał wymaga decyzji redaktora. Publikacja jest osobnym krokiem po zatwierdzeniu.
+      </div>
+    </section>
+
+    <aside class="evidence" aria-labelledby="sources-title">
+      <section>
+        <p class="kicker">03 / MATERIAŁ ŹRÓDŁOWY</p>
+        <div class="evidence-heading">
+          <h2 id="sources-title">Artykuły i streszczenia</h2>
+          <span id="source-summary">0 publikacji</span>
+        </div>
+        <div id="source-list" class="source-list"></div>
+      </section>
+
+      <section class="facts-section" aria-labelledby="facts-title">
+        <div class="evidence-heading">
+          <h2 id="facts-title">Kontrola materiału</h2>
+          <span>AGREGACJA</span>
+        </div>
+        <ul id="facts-list" class="facts-list"></ul>
+      </section>
+
+      <section class="verification-section" aria-labelledby="verification-title">
+        <div class="evidence-heading">
+          <h2 id="verification-title">Potwierdzone między źródłami</h2>
+          <span>PORÓWNANIE</span>
+        </div>
+        <div id="verification-list" class="verification-list"></div>
+      </section>
+
+      <section class="conflicts-section" aria-labelledby="conflicts-title">
+        <div class="evidence-heading">
+          <h2 id="conflicts-title">Rozbieżności i wyjątki</h2>
+          <span>DO SPRAWDZENIA</span>
+        </div>
+        <div id="conflicts-list" class="verification-list"></div>
+      </section>
+
+      <section class="method-section" aria-labelledby="method-title">
+        <div class="evidence-heading">
+          <h2 id="method-title">Jak to sprawdzamy</h2>
+          <span>METODA</span>
+        </div>
+        <ol id="method-list" class="method-list"></ol>
+      </section>
+    </aside>
+  </main>
+
+  <dialog class="source-modal" id="source-modal" aria-labelledby="source-modal-title" aria-describedby="source-modal-summary">
+    <div class="source-modal-panel">
+      <header class="source-modal-head">
+        <div>
+          <p class="kicker">PODGLĄD MATERIAŁU ŹRÓDŁOWEGO</p>
+          <p class="source-modal-domain" id="source-modal-domain">—</p>
+        </div>
+        <button class="button button-ghost source-modal-close" id="source-modal-close" type="button" aria-label="Zamknij podgląd artykułu">ZAMKNIJ ×</button>
+      </header>
+      <div class="source-modal-body">
+        <p class="source-modal-meta" id="source-modal-meta">—</p>
+        <h2 id="source-modal-title">Podgląd artykułu</h2>
+
+        <section class="source-modal-section" aria-labelledby="source-modal-summary-label">
+          <h3 id="source-modal-summary-label">STRESZCZENIE ROBOCZE</h3>
+          <p id="source-modal-summary">—</p>
+        </section>
+
+        <section class="source-modal-section" aria-labelledby="source-modal-preview-label">
+          <h3 id="source-modal-preview-label">PODGLĄD TEKSTU</h3>
+          <blockquote id="source-modal-preview">—</blockquote>
+        </section>
+
+        <section class="source-modal-section" id="source-modal-claims-section" aria-labelledby="source-modal-claims-label">
+          <h3 id="source-modal-claims-label">NAJWAŻNIEJSZE TWIERDZENIA</h3>
+          <ul id="source-modal-claims"></ul>
+        </section>
+
+        <a class="button button-primary source-modal-link" id="source-modal-link" href="#" target="_blank" rel="noopener noreferrer">OTWÓRZ ORYGINALNY ARTYKUŁ ↗</a>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="footer">
+    <span>TRWAŁY PIPELINE / ANALIZA WIELOŹRÓDŁOWA / PUBLIKACJA PWA</span>
+    <a href="/feed">OTWÓRZ PUBLICZNY FEED →</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

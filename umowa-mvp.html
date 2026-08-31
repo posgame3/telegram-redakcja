@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Umowa MVP — Telegram Redakcja</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #59636e;
+      --line: #cfd5dc;
+      --soft: #f4f6f8;
+      --accent: #155eef;
+      --paper: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    @page { size: A4; margin: 0; }
+    html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 8.45pt;
+      line-height: 1.27;
+      font-variant-numeric: tabular-nums;
+    }
+    .page {
+      width: 210mm;
+      height: 297mm;
+      padding: 13.5mm 15mm 12mm;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+      background: var(--paper);
+    }
+    .page:last-child { page-break-after: auto; }
+    .document-kicker {
+      margin: 0 0 2.2mm;
+      color: var(--accent);
+      font-size: 7.2pt;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 170mm;
+      font-size: 18pt;
+      line-height: 1.06;
+      letter-spacing: -.025em;
+    }
+    .subtitle {
+      margin: 1.8mm 0 4mm;
+      color: var(--muted);
+      font-size: 9.3pt;
+      font-weight: 500;
+    }
+    .intro { margin: 0 0 3.2mm; }
+    .party-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm;
+      margin: 0 0 3.4mm;
+      break-inside: avoid;
+    }
+    .party {
+      padding: 3mm 3.4mm;
+      border-top: 1.2pt solid var(--ink);
+      border-bottom: .55pt solid var(--line);
+      background: var(--soft);
+      min-height: 28mm;
+    }
+    .party-label {
+      display: block;
+      margin-bottom: 1.5mm;
+      color: var(--accent);
+      font-size: 7pt;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .party strong { display: block; margin-bottom: .8mm; font-size: 9.4pt; }
+    .party p { margin: 0; }
+    .party .nip { margin-top: 1mm; font-weight: 650; }
+    .definition { margin: 0 0 3.5mm; color: var(--muted); }
+    section { margin: 0 0 3mm; break-inside: auto; }
+    h2 {
+      margin: 0 0 1.35mm;
+      padding-bottom: .9mm;
+      border-bottom: .55pt solid var(--line);
+      font-size: 10.4pt;
+      line-height: 1.15;
+      letter-spacing: -.01em;
+      break-after: avoid;
+    }
+    p { margin: 0 0 1.45mm; orphans: 3; widows: 3; }
+    .clause { padding-left: 5mm; text-indent: -5mm; }
+    .scope-list {
+      columns: 2;
+      column-gap: 6mm;
+      margin: 1.2mm 0 1.8mm;
+      padding: 0;
+      list-style: none;
+    }
+    .scope-list li {
+      position: relative;
+      margin: 0 0 1.2mm;
+      padding-left: 3.2mm;
+      break-inside: avoid;
+    }
+    .scope-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .price-band {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 6mm;
+      margin: 1.4mm 0 1.8mm;
+      padding: 2.4mm 3mm;
+      border-left: 2.2pt solid var(--accent);
+      background: var(--soft);
+      break-inside: avoid;
+    }
+    .price-band span { color: var(--muted); font-size: 7pt; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .price-band strong { font-size: 12pt; letter-spacing: -.015em; }
+    .page-number {
+      position: absolute;
+      right: 15mm;
+      bottom: 6.3mm;
+      color: var(--muted);
+      font-size: 7pt;
+      letter-spacing: .08em;
+    }
+    .continuation-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4mm;
+      padding-bottom: 2mm;
+      border-bottom: 1.2pt solid var(--ink);
+    }
+    .continuation-head strong { font-size: 10pt; }
+    .continuation-head span { color: var(--muted); font-size: 7pt; letter-spacing: .1em; text-transform: uppercase; }
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14mm;
+      margin-top: 5mm;
+      break-inside: avoid;
+    }
+    .signature { padding-top: 9mm; border-top: .65pt solid var(--ink); }
+    .signature strong { display: block; margin-bottom: .6mm; font-size: 8pt; letter-spacing: .08em; text-transform: uppercase; }
+    .signature span { color: var(--muted); font-size: 7pt; }
+    .legal-note {
+      margin-top: 3mm;
+      color: var(--muted);
+      font-size: 7.1pt;
+      text-align: center;
+    }
+    @media screen {
+      body { background: var(--soft); }
+      .page { margin: 10mm auto; box-shadow: 0 2mm 8mm rgba(23, 32, 42, .13); }
+    }
+    @media print {
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <p class="document-kicker">Umowa B2B · MVP aplikacji internetowej</p>
+    <h1>Umowa o wykonanie i konfigurację MVP aplikacji</h1>
+    <p class="subtitle">„Telegram Redakcja”</p>
+
+    <p class="intro">zawarta dnia ................................ r. w ................................ pomiędzy:</p>
+
+    <div class="party-grid">
+      <section class="party">
+        <span class="party-label">Zamawiający</span>
+        <strong>NORDSIL Sp. z o.o.</strong>
+        <p>Aleja Najświętszej Maryi Panny 2</p>
+        <p>42-202 Częstochowa</p>
+        <p class="nip">NIP: 9492266173</p>
+      </section>
+      <section class="party">
+        <span class="party-label">Wykonawca</span>
+        <strong>Safion Maciej Lagwa</strong>
+        <p>ks. Szczepana Rembowskiego 56/60 m79</p>
+        <p>95-100 Zgierz</p>
+        <p class="nip">NIP: 7322231418</p>
+      </section>
+    </div>
+
+    <p class="definition">dalej odpowiednio „Zamawiający” i „Wykonawca”, łącznie zwani „Stronami”. Umowa zostaje zawarta w związku z działalnością gospodarczą Stron.</p>
+
+    <section>
+      <h2>§ 1. Przedmiot i zakres MVP</h2>
+      <p class="clause"><strong>1.</strong> Wykonawca wykona, skonfiguruje i przekaże Zamawiającemu działające MVP aplikacji internetowej do agregowania publicznych artykułów, porównywania informacji i przygotowywania krótkich telegramów redakcyjnych.</p>
+      <p class="clause"><strong>2.</strong> Zakres Umowy obejmuje:</p>
+      <ul class="scope-list">
+        <li>Panel redakcyjny umożliwia edycję, akceptację, odrzucenie oraz ręczne opublikowanie materiału. AI nie publikuje treści samodzielnie. Materiał trafia do publicznego feedu responsywnej aplikacji WWW dopiero po użyciu przez redaktora funkcji „Publikuj”.</li>
+        <li>pobieranie uzgodnionych publicznych RSS-ów i artykułów z kontrolą robots.txt, domen, limitów i paywalla, bez obchodzenia zabezpieczeń;</li>
+        <li>tworzenie materiału tylko na podstawie minimum 2 poprawnie pobranych artykułów z minimum 2 niezależnych grup wydawniczych;</li>
+        <li>streszczenia, kluczowe twierdzenia, informacje wspólne i jednoźródłowe oraz sygnalizowanie rozbieżności;</li>
+        <li>generowanie nowego tekstu 20–30 słów z faktów potwierdzonych w minimum 2 źródłach, po podłączeniu modelu językowego, wraz z kontrolą cytatów, podobieństwa i pokrycia faktami;</li>
+        <li>responsywny interfejs jasny/ciemny, kod źródłowy, krótką instrukcję oraz uruchomienie i test na jednym uzgodnionym serwerze.</li>
+      </ul>
+      <p class="clause"><strong>3.</strong> Pełna konfiguracja obejmuje uruchomienie zakresu wskazanego powyżej na tymczasowym środowisku testowym zapewnionym przez Wykonawcę. Na potrzeby wykonania, prezentacji i odbioru MVP Wykonawca zapewni tymczasowy serwer VPS oraz testowe klucze API. Zasoby te służą wyłącznie realizacji i odbiorowi MVP, nie są przekazywane Zamawiającemu i mogą zostać wyłączone po odbiorze. Cena nie obejmuje produkcyjnego VPS, domeny, płatnych API, modelu AI, licencji, stałego utrzymania, SLA ani nowych funkcji.</p>
+    </section>
+
+    <section>
+      <h2>§ 2. Termin, współpraca i odbiór</h2>
+      <p class="clause"><strong>1.</strong> Prace rozpoczną się po podpisaniu Umowy, zapłacie zaliczki i przekazaniu przez Zamawiającego niezbędnych materiałów oraz decyzji. Termin przekazania MVP wynosi 7 dni roboczych. Opóźnienie Zamawiającego w przekazaniu materiałów lub decyzji albo opóźnienie dostawców zewnętrznych odpowiednio przesuwa termin.</p>
+      <p class="clause"><strong>2.</strong> Cena obejmuje 2 rundy drobnych poprawek zgodnych z § 1. Nowe funkcje lub zmiana założeń wymagają odrębnej wyceny zaakceptowanej co najmniej e-mailem.</p>
+      <p class="clause"><strong>3.</strong> Wykonawca zgłosi gotowość e-mailem. Zamawiający w ciągu 5 Dni roboczych potwierdzi odbiór albo przekaże jedną listę konkretnych wad względem § 1. Wykonawca usunie potwierdzone wady w rozsądnym terminie. Drobne różnice wizualne, propozycje rozwoju i ograniczenia źródeł zewnętrznych nie blokują odbioru. Brak uwag w terminie połączony z używaniem aplikacji oznacza odbiór.</p>
+    </section>
+
+    <span class="page-number">01 / 02</span>
+  </article>
+
+  <article class="page">
+    <section>
+      <h2>§ 3. Wynagrodzenie</h2>
+      <div class="price-band"><span>Wynagrodzenie i zaliczka</span><strong>3 200,00 zł netto + VAT</strong></div>
+      <p class="clause"><strong>1.</strong> Wynagrodzenie ryczałtowe wynosi 3 200,00 zł netto + VAT według właściwej stawki.</p>
+      <p class="clause"><strong>2.</strong> Zamawiający zapłaci: (a) 1 600,00 zł netto + VAT zaliczki, w terminie 7 dni od faktury i przed rozpoczęciem prac; (b) 1 600,00 zł netto + VAT w terminie 7 dni od odbioru, na podstawie faktury końcowej.</p>
+      <p class="clause"><strong>3.</strong> Przy VAT 23% kwota całkowita wynosi 3 936,00 zł brutto, a każda płatność 1 968,00 zł brutto. Wiążące są wartości oraz rachunek wskazane na prawidłowo wystawionej fakturze.</p>
+    </section>
+
+    <section>
+      <h2>§ 4. Obowiązki Stron i usługi zewnętrzne</h2>
+      <p class="clause"><strong>1.</strong> Na potrzeby wykonania, prezentacji i testów MVP Wykonawca zapewnia tymczasowy serwer VPS oraz testowe klucze API. Zasoby te służą wyłącznie realizacji i odbiorowi Umowy, pozostają pod kontrolą Wykonawcy i mogą zostać wyłączone po odbiorze.</p>
+      <p class="clause"><strong>2.</strong> Do dalszego działania aplikacji po odbiorze Zamawiający zapewnia we własnym zakresie własne konta i klucze API, domenę, serwer lub VPS oraz pokrywa opłaty za usługi zewnętrzne, chyba że Strony odrębnie uzgodnią odpłatne utrzymanie.</p>
+      <p class="clause"><strong>3.</strong> Zamawiający zapewnia niezbędne materiały i decyzje oraz odpowiada za końcową kontrolę, zatwierdzenie, publikację i zgodność treści z prawem. Model AI i mechanizmy porównawcze wspierają redaktora, lecz nie gwarantują prawdziwości informacji ani braku naruszeń.</p>
+      <p class="clause"><strong>4.</strong> Działanie zależy od stron, RSS-ów, API i modeli osób trzecich. Ich awarie lub zmiany po odbiorze nie są wadą MVP i mogą wymagać osobnego zlecenia. Klucze nie będą wpisywane do kodu. Jeżeli konieczne będzie powierzenie danych osobowych, Strony zawrą odrębną umowę.</p>
+    </section>
+
+    <section>
+      <h2>§ 5. Kod, prawa i poufność</h2>
+      <p class="clause"><strong>1.</strong> Po zapłacie całości Wykonawca przenosi na Zamawiającego, w ramach ceny, autorskie prawa majątkowe do kodu i dokumentacji wykonanych specjalnie dla MVP: utrwalanie, kopiowanie, uruchamianie, udostępnianie online, modyfikowanie, rozwijanie i łączenie z innymi systemami, bez ograniczeń czasu i terytorium, wraz z prawem do opracowań.</p>
+      <p class="clause"><strong>2.</strong> Biblioteki open source, elementy osób trzecich i wcześniejsze ogólne narzędzia Wykonawcy pozostają na własnych licencjach; Zamawiający otrzymuje licencję niezbędną do używania ich w Aplikacji. Do pełnej zapłaty MVP służy wyłącznie testom i odbiorowi.</p>
+      <p class="clause"><strong>3.</strong> Strony zachowają w poufności hasła oraz niepubliczne informacje techniczne i handlowe przez 3 lata, a tajemnice przedsiębiorstwa tak długo, jak zachowują ten charakter.</p>
+    </section>
+
+    <section>
+      <h2>§ 6. Gwarancja, odpowiedzialność i zakończenie</h2>
+      <p class="clause"><strong>1.</strong> Wykonawca przez 30 dni od odbioru bezpłatnie usuwa odtwarzalne błędy przekazanej wersji względem § 1. Gwarancja nie obejmuje zmian Zamawiającego, awarii infrastruktury ani zmian usług zewnętrznych i nie stanowi SLA.</p>
+      <p class="clause"><strong>2.</strong> Odpowiedzialność Wykonawcy jest ograniczona do 3 200,00 zł netto, z wyjątkiem szkody umyślnej i przypadków, gdy prawo zakazuje ograniczenia. Wykonawca nie odpowiada za utracone korzyści, treści źródeł, decyzje redakcyjne ani usługi osób trzecich.</p>
+      <p class="clause"><strong>3.</strong> Przy rezygnacji Zamawiającego po rozpoczęciu prac Strony rozliczą wykonany zakres według zaawansowania; zaliczka zostanie zaliczona, a niewykorzystana część zwrócona. Istotne naruszenie pozwala rozwiązać Umowę po bezskutecznym 7-dniowym terminie na jego usunięcie.</p>
+    </section>
+
+    <section>
+      <h2>§ 7. Postanowienia końcowe</h2>
+      <p class="clause"><strong>1.</strong> Zmiana ceny lub zakresu wymaga potwierdzenia dokumentowego, w tym jednoznacznego e-maila. Stosuje się prawo polskie; spory Strony najpierw rozwiązują polubownie, a następnie przed sądem właściwym według przepisów ogólnych.</p>
+      <p class="clause"><strong>2.</strong> Umowę sporządzono w dwóch jednobrzmiących egzemplarzach, po jednym dla każdej ze Stron, albo zawarto elektronicznie. Nieważność części postanowień nie narusza pozostałych.</p>
+    </section>
+
+    <div class="signature-grid">
+      <div class="signature"><strong>Wykonawca</strong><span>Safion Maciej Lagwa · data i podpis</span></div>
+      <div class="signature"><strong>Zamawiający</strong><span>NORDSIL Sp. z o.o. · data i podpis</span></div>
+    </div>
+    <span class="page-number">02 / 02</span>
+  </article>
+</body>
+</html>
