@@ -17,24 +17,29 @@
   --secondary-foreground: oklch(0.21 0.012 60);
   --muted: oklch(0.92 0.022 86);
   --muted-foreground: oklch(0.42 0.014 62);
-  --accent: oklch(0.42 0.13 28);
-  --accent-foreground: oklch(0.97 0.014 90);
-  --destructive: oklch(0.42 0.13 28);
+  /* --accent, --destructive i --chart-1/--chart-4 byly wczesniej tym samym
+     odcieniem (skopiowane z akcentu feedu przy "dopasowaniu do gazety"),
+     przez co statusy DO DECYZJI / ODRZUCONY / OPUBLIKOWANY byly nierozróżnialne
+     kolorem. Teraz kazdy status ma wlasny, odrebny odcien: amber = do decyzji,
+     niebieski = zatwierdzony, czerwony = odrzucony, zielony = opublikowany. */
+  --accent: oklch(0.58 0.15 75);
+  --accent-foreground: oklch(0.2 0.02 75);
+  --destructive: oklch(0.5 0.18 25);
   --destructive-foreground: oklch(0.97 0.014 90);
   --border: oklch(0.28 0.014 60);
   --input: oklch(0.72 0.016 78);
   --ring: oklch(0.55 0.14 250);
-  --chart-1: oklch(0.42 0.13 28);
-  --chart-2: oklch(0.5 0.11 30);
+  --chart-1: oklch(0.5 0.13 145);
+  --chart-2: oklch(0.58 0.14 145);
   --chart-3: oklch(0.42 0.014 62);
-  --chart-4: oklch(0.42 0.13 28);
+  --chart-4: oklch(0.55 0.14 250);
   --chart-5: oklch(0.55 0.14 250);
   --sidebar: oklch(0.92 0.022 86);
   --sidebar-foreground: oklch(0.21 0.012 60);
   --sidebar-primary: oklch(0.21 0.012 60);
   --sidebar-primary-foreground: oklch(0.95 0.018 88);
-  --sidebar-accent: oklch(0.42 0.13 28);
-  --sidebar-accent-foreground: oklch(0.97 0.014 90);
+  --sidebar-accent: oklch(0.58 0.15 75);
+  --sidebar-accent-foreground: oklch(0.2 0.02 75);
   --sidebar-border: oklch(0.28 0.014 60);
   --sidebar-ring: oklch(0.55 0.14 250);
   --radius: 0;
@@ -58,23 +63,23 @@
   --secondary-foreground: oklch(0.93 0.008 88);
   --muted: oklch(0.14 0.008 60);
   --muted-foreground: oklch(0.74 0.012 84);
-  --accent: oklch(0.72 0.13 32);
+  --accent: oklch(0.78 0.14 75);
   --accent-foreground: oklch(0.16 0.01 60);
-  --destructive: oklch(0.72 0.13 32);
+  --destructive: oklch(0.68 0.19 25);
   --destructive-foreground: oklch(0.16 0.01 60);
   --border: oklch(0.62 0.012 80);
   --input: oklch(0.34 0.01 70);
   --ring: oklch(0.78 0.13 240);
-  --chart-1: oklch(0.72 0.13 32);
-  --chart-2: oklch(0.78 0.11 34);
+  --chart-1: oklch(0.72 0.13 145);
+  --chart-2: oklch(0.78 0.12 145);
   --chart-3: oklch(0.74 0.012 84);
-  --chart-4: oklch(0.72 0.13 32);
+  --chart-4: oklch(0.78 0.13 240);
   --chart-5: oklch(0.78 0.13 240);
   --sidebar: oklch(0.14 0.008 60);
   --sidebar-foreground: oklch(0.93 0.008 88);
   --sidebar-primary: oklch(0.93 0.008 88);
   --sidebar-primary-foreground: oklch(0.17 0.008 60);
-  --sidebar-accent: oklch(0.72 0.13 32);
+  --sidebar-accent: oklch(0.78 0.14 75);
   --sidebar-accent-foreground: oklch(0.16 0.01 60);
   --sidebar-border: oklch(0.62 0.012 80);
   --sidebar-ring: oklch(0.78 0.13 240);

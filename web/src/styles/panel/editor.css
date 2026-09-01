@@ -10,7 +10,7 @@
   color: var(--accent-foreground);
 }
 .status[data-status="approved"] {
-  background: var(--primary);
+  background: var(--chart-4);
   color: var(--primary-foreground);
 }
 .status[data-status="published"] {

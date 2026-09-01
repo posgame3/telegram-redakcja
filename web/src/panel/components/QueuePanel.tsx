@@ -29,17 +29,28 @@ export function QueuePanel({
       </div>
 
       <nav className="filters" aria-label="Filtry kolejki">
-        {QUEUE_FILTERS.map(({ value, label }) => (
-          <button
-            key={value}
-            className={value === filter ? "filter is-active" : "filter"}
-            type="button"
-            aria-pressed={value === filter}
-            onClick={() => onFilterChange(value)}
-          >
-            {label}
-          </button>
-        ))}
+        {QUEUE_FILTERS.map(({ value, label }) => {
+          const count =
+            value === "all" ? events.length : events.filter((e) => e.status === value).length;
+          return (
+            <button
+              key={value}
+              className={value === filter ? "filter is-active" : "filter"}
+              type="button"
+              data-status={value === "all" ? undefined : value}
+              aria-pressed={value === filter}
+              onClick={() => onFilterChange(value)}
+            >
+              {label}
+              {/* Licznik nie wchodzi do accessible name przycisku (jest poza
+                  tekstem <button>, oznaczony aria-hidden), zeby nie zmieniac
+                  nazwy, po ktorej testy i czytniki ekranu odnajduja filtr. */}
+              <span className="filter-count" aria-hidden="true">
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </nav>
 
       <div className="event-list" aria-live="polite">

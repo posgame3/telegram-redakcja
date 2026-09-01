@@ -9,6 +9,9 @@
   border-bottom: 3px double var(--border);
 }
 .filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   border: 0;
   padding: 9px 8px;
   background: transparent;
@@ -23,6 +26,36 @@
   background: var(--foreground);
   color: var(--background);
   font-weight: 700;
+}
+/* Licznik materialow w kazdej zakladce - redaktor widzi rozklad statusow bez
+   klikania kazdego filtra po kolei. Kolor tla dopasowany do statusu, zeby
+   licznik odpowiadal kolorystyce wierszy w listy nizej. */
+.filter-count {
+  border-radius: 2px;
+  padding: 1px 5px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-weight: 700;
+}
+.filter.is-active .filter-count {
+  background: var(--background);
+  color: var(--foreground);
+}
+.filter[data-status="review"] .filter-count {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.filter[data-status="approved"] .filter-count {
+  background: var(--chart-4);
+  color: var(--primary-foreground);
+}
+.filter[data-status="rejected"] .filter-count {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+.filter[data-status="published"] .filter-count {
+  background: var(--chart-1);
+  color: var(--primary-foreground);
 }
 
 .event-list {
@@ -40,8 +73,16 @@
 .event-row:hover {
   background: var(--muted);
 }
-/* Status widoczny od razu przez kolor tla wiersza, nie tylko przez maly tekst -
-   zielone dla opublikowanych, czerwonawe dla odrzuconych, tak samo jak w edytorze. */
+/* Status widoczny od razu przez kolor krechy + tla wiersza, kazdy status ma
+   wlasny, odrebny odcien (patrz tokens.css): amber = do decyzji, niebieski =
+   zatwierdzony, zielony = opublikowany, czerwony = odrzucony. Wczesniej
+   published/rejected/do-decyzji uzywaly tego samego koloru - nierozróżnialne
+   przy przegladaniu listy. */
+.event-row[data-status="review"] {
+  padding-left: 0;
+  border-left: 4px solid var(--accent);
+  background: color-mix(in oklch, var(--accent) 10%, transparent);
+}
 .event-row[data-status="published"] {
   padding-left: 0;
   border-left: 4px solid var(--chart-1);
@@ -49,8 +90,8 @@
 }
 .event-row[data-status="approved"] {
   padding-left: 0;
-  border-left: 4px solid var(--primary);
-  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  border-left: 4px solid var(--chart-4);
+  background: color-mix(in oklch, var(--chart-4) 10%, transparent);
 }
 .event-row[data-status="rejected"] {
   padding-left: 0;
@@ -58,34 +99,66 @@
   background: color-mix(in oklch, var(--destructive) 10%, transparent);
   opacity: 0.75;
 }
+.event-row[data-status="review"]:hover {
+  background: color-mix(in oklch, var(--accent) 20%, transparent);
+}
 .event-row[data-status="published"]:hover {
   background: color-mix(in oklch, var(--chart-1) 22%, transparent);
 }
 .event-row[data-status="approved"]:hover {
-  background: color-mix(in oklch, var(--primary) 18%, transparent);
+  background: color-mix(in oklch, var(--chart-4) 18%, transparent);
 }
 .event-row[data-status="rejected"]:hover {
   background: color-mix(in oklch, var(--destructive) 18%, transparent);
 }
+/* Zaznaczenie dodaje obrys, nie kasuje koloru statusu - wczesniej .is-selected
+   nadpisywalo tlo na jednolity --accent, przez co po kliknieciu material
+   "gubil" swoj status wizualnie. */
 .event-row.is-selected {
-  padding-left: 11px;
-  border-left: 4px solid var(--primary);
-  background: var(--accent);
-  color: var(--accent-foreground);
+  padding-left: 0;
+  outline: 2px solid var(--foreground);
+  outline-offset: -2px;
 }
 .event-row-top {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 8px;
 }
-.event-row-time,
-.event-row-status {
+.event-row-time {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+/* Status jako maly, wypelniony znaczek (nie plain text) - kolor tla znaczka
+   ten sam co krecha wiersza, wiec status jest widoczny nawet bez patrzenia
+   na lewa krawedz. */
+.event-row-status {
+  border-radius: 2px;
+  padding: 2px 6px;
+  color: var(--card);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.event-row[data-status="review"] .event-row-status {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.event-row[data-status="published"] .event-row-status {
+  background: var(--chart-1);
+}
+.event-row[data-status="approved"] .event-row-status {
+  background: var(--chart-4);
+}
+.event-row[data-status="rejected"] .event-row-status {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
 }
 .event-row-title {
   display: block;
