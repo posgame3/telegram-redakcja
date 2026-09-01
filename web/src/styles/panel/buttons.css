@@ -6,9 +6,11 @@
   padding: 9px 13px;
   background: var(--card);
   cursor: pointer;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
   transition:
     background 120ms ease,
     color 120ms ease,

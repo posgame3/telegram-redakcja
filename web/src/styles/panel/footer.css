@@ -2,11 +2,14 @@
 
 .footer {
   min-height: 36px;
-  border-top: 2px solid var(--border);
+  border-top: 1px solid var(--border);
   padding: 8px 18px;
+  background: var(--muted);
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .footer a {
   color: var(--primary);

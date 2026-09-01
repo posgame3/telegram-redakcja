@@ -38,7 +38,7 @@ body.has-modal {
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 3px double var(--border);
   padding: 16px 18px;
   background: var(--muted);
 }
@@ -47,10 +47,12 @@ body.has-modal {
 }
 .source-modal-domain {
   margin: 0;
-  color: var(--primary);
+  color: var(--accent);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .source-modal-close {
   flex: 0 0 auto;
@@ -63,13 +65,16 @@ body.has-modal {
 .source-modal-meta {
   margin: 0 0 9px;
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .source-modal-body h2 {
   max-width: 640px;
   margin: 0;
   font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(22px, 4vw, 34px);
   line-height: 1.08;
 }
@@ -81,8 +86,10 @@ body.has-modal {
 .source-modal-section h3 {
   margin: 0 0 9px;
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .source-modal-section p {
   margin: 0;

@@ -3,7 +3,7 @@
 .editor-head {
   align-items: flex-start;
   padding-bottom: 21px;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 3px double var(--border);
 }
 .status[data-status="review"] {
   background: var(--accent);
@@ -37,7 +37,10 @@
 }
 .event-meta dt {
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .event-meta dd {
   margin: 5px 0 0;
@@ -54,6 +57,7 @@
 }
 .word-count {
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 11px;
 }
 .word-count.is-valid {
@@ -80,6 +84,7 @@
 }
 .editorial-field span {
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -94,6 +99,7 @@
   padding: 9px 11px;
   background: var(--card);
   color: var(--card-foreground);
+  font-family: var(--font-mono);
 }
 .editorial-field-wide input {
   font-family: var(--font-sans);
@@ -114,6 +120,8 @@
   line-height: 1.55;
 }
 
+/* Serif jak w publicznym feedzie: to tutaj redaktor widzi tekst tak, jak
+   ostatecznie wyglada w czytniku, a nie jak w formularzu administracyjnym. */
 textarea {
   display: block;
   width: 100%;
@@ -125,7 +133,7 @@ textarea {
   color: var(--card-foreground);
   font-family: var(--font-sans);
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.45;
 }
 textarea:disabled {

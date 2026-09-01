@@ -19,6 +19,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-mono);
   font-size: 14px;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,

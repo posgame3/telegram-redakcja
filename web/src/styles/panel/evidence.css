@@ -10,7 +10,10 @@
 }
 .evidence-heading span {
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .source-list {
   margin-bottom: 30px;
@@ -25,7 +28,10 @@
   gap: 12px;
   margin-bottom: 7px;
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .source-item a {
   color: var(--foreground);

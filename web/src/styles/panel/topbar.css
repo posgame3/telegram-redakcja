@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
   align-items: center;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 3px double var(--border);
 }
 
 .brand,
@@ -32,14 +32,20 @@
 }
 .brand strong {
   display: block;
-  font-size: 17px;
-  letter-spacing: 0.12em;
+  font-family: var(--font-sans);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 .brand small {
   display: block;
   margin-top: 3px;
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .system-state {
@@ -47,8 +53,10 @@
   align-items: center;
   gap: 9px;
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .live-dot {
   width: 8px;

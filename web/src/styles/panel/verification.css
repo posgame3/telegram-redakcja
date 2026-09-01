@@ -24,7 +24,10 @@
   gap: 10px;
   margin-top: 7px;
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .verification-item.is-conflict {
   border-left: 3px solid var(--destructive);
@@ -54,6 +57,7 @@
   content: counter(method, decimal-leading-zero);
   position: absolute;
   left: 0;
-  color: var(--primary);
+  color: var(--accent);
+  font-family: var(--font-mono);
   font-weight: 700;
 }
