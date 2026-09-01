@@ -108,12 +108,17 @@ export function makeEvent(overrides: EventOverrides = {}): EditorialEvent {
   return event;
 }
 
-/** Material bez tresci: generator zadzialal fail-closed. */
+/**
+ * Material bez tresci: generator zadzialal fail-closed. Title jest niepusty,
+ * tak jak w produkcji - aggregator.mjs zawsze wypelnia title tytulem artykulu
+ * zrodlowego jako zapas (title: generation.title || articles[0].title), wiec
+ * "brak tresci" rozpoznaje sie po pustym level1, nie po pustym title.
+ */
 export function makeEmptyEvent(id = "live-empty"): EditorialEvent {
   const event = normalizeEvent({
     id,
     validationId: id,
-    title: "",
+    title: "Rakiety uderzyły w bazę wojskową",
     level1: "",
     level2: "",
     category: "inne",

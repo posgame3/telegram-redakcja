@@ -37,11 +37,15 @@ export function App() {
   const view = usePanelView(setSelectedId);
   // Material bez wygenerowanej tresci (generator zadzialal fail-closed) nie
   // ma niczego do zaakceptowania - redaktor nie moze na nim nic zrobic, wiec
-  // nie ma powodu, by mu sie w ogole pojawial. Zostaje w bazie (aggregator
-  // wciaz go widzi jako znany temat, wiec nie zescrapuje go ponownie w kolko),
-  // filtrujemy go tylko z widoku. Ponowna generacja jest mozliwa jedynie po
-  // wskazaniu materialu z linku - ten przypadek nie jest tu odfiltrowywany.
-  const events = queue.events.filter((event) => Boolean(event.level1 || event.title));
+  // nie ma powodu, by mu sie w ogole pojawial, nawet gdy jest wskazany
+  // linkiem (#live-...). Zostaje w bazie (aggregator wciaz go widzi jako
+  // znany temat, wiec nie zescrapuje go ponownie w kolko) - filtrujemy go
+  // tylko z widoku.
+  // Sprawdzamy level1, nie title: aggregator.mjs zawsze wypelnia title
+  // tytulem artykulu zrodlowego jako zapas (title: generation.title ||
+  // articles[0].title), wiec title nigdy nie jest puste, nawet gdy generator
+  // nic nie wygenerowal - to dawalo pozycje w kolejce ze skrotem "0/20-30 slow".
+  const events = queue.events.filter((event) => Boolean(event.level1));
 
   // Zaznaczenie wyliczamy przy renderowaniu: gdy wskazany material zniknal
   // z kolejki (albo link byl nieaktualny), pokazujemy pierwszy dostepny.
