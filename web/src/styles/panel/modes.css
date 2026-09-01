@@ -53,32 +53,8 @@ textarea[readonly]:not(:disabled) {
   display: none;
 }
 @media (max-width: 760px) {
-  /* Pasek gorny zajmowal prawie 200 px wysokosci przed pierwsza trescia. */
   .topbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
     padding: 10px 14px;
-  }
-  .brand small {
-    display: none;
-  }
-  .topbar-actions {
-    border-top: 0;
-    justify-content: flex-end;
-  }
-  .topbar-actions .button {
-    padding: 9px 11px;
-    font-size: 10px;
-  }
-  .system-state {
-    order: 3;
-    width: 100%;
-    border-top: 1px solid var(--border);
-    padding-top: 7px;
-    font-size: 10px;
   }
   .back-to-queue {
     display: block;
@@ -93,10 +69,9 @@ textarea[readonly]:not(:disabled) {
   body[data-view="detail"] .queue {
     display: none;
   }
-  /* W widoku materialu na telefonie znak redakcji, tryb kolorystyczny i
-     POBIERZ NOWE nie sluza do niczego - redaktor ma tylko podjac decyzje.
-     Cofniecie ("← Cofnij" w .editor) jest jedyna droga powrotu do kolejki,
-     gdzie te elementy sa i tak widoczne. */
+  /* W widoku materialu na telefonie POBIERZ NOWE nie sluzy do niczego -
+     redaktor ma tylko podjac decyzje. Cofniecie ("← Cofnij" w .editor) jest
+     jedyna droga powrotu do kolejki, gdzie ten pasek jest i tak widoczny. */
   body[data-view="detail"] .topbar {
     display: none;
   }

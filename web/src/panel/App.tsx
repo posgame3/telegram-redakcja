@@ -32,7 +32,9 @@ export function App() {
   // Automatyczne odswiezanie kolejki jest wstrzymane w trybie edycji, zeby nie
   // nadpisac tekstu, ktory redaktor wlasnie pisze.
   const queue = useEditorialQueue(editing);
-  const { theme, toggle: toggleTheme } = useTheme(STORAGE_KEYS.panelTheme);
+  // Przelacznik trybu usuniety z paska, ale hook nadal ustawia data-theme
+  // na <html> wedlug zapisanej wczesniej preferencji redaktora.
+  useTheme(STORAGE_KEYS.panelTheme);
 
   const view = usePanelView(setSelectedId);
   // Material bez wygenerowanej tresci (generator zadzialal fail-closed) nie
@@ -145,8 +147,6 @@ export function App() {
 
       <TopBar
         lastSync={queue.lastSync}
-        theme={theme}
-        onToggleTheme={toggleTheme}
         onSynchronize={() => void synchronize()}
         syncing={queue.syncing}
       />

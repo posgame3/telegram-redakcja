@@ -1,51 +1,12 @@
-/* Pasek gorny: znak redakcji, stan monitora i akcje globalne. */
+/* Pasek gorny: jedna niska linia ze stanem synchronizacji i reczna akcja. */
 
 .topbar {
-  min-height: 76px;
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
-  align-items: center;
-  border-bottom: 3px double var(--border);
-}
-
-.brand,
-.system-state,
-.topbar-actions {
-  padding: 14px 18px;
-}
-
-.brand {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-}
-.brand-mark {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border: 2px solid var(--border);
-  background: var(--foreground);
-  color: var(--background);
-  font-size: 22px;
-  font-weight: 700;
-}
-.brand strong {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-.brand small {
-  display: block;
-  margin-top: 3px;
-  color: var(--muted-foreground);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  padding: 10px 18px;
+  border-bottom: 3px double var(--border);
 }
 
 .system-state {
@@ -62,12 +23,4 @@
   width: 8px;
   height: 8px;
   background: var(--chart-2);
-}
-.separator {
-  color: var(--border);
-}
-.topbar-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
 }
