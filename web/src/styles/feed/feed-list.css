@@ -47,7 +47,7 @@
   display: grid;
   width: 100%;
   grid-template-columns: 108px 1fr;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
   border: 0;
   padding: 18px 4px;
