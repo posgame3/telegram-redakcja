@@ -67,7 +67,11 @@ export function Reader({ reader, ratingLabel, keyboardBlocked }: ReaderProps) {
     // Fokus laduje na realnym przycisku, a nie na karcie: nie rysuje obwodki
     // wokol calej karty, a klawiatura i tak dziala globalnie.
     closeRef.current?.focus({ preventScroll: true });
-    if (document.fullscreenEnabled && !document.fullscreenElement) {
+    // Pelny ekran tylko na telefonie - tam modal i tak zajmuje caly widok,
+    // wiec chowanie paska adresu daje realny zysk miejsca. Na desktopie
+    // wywolanie pelnego ekranu przeglądarki jest nieproszone i zaskakujace.
+    const isNarrow = window.matchMedia("(max-width: 620px)").matches;
+    if (isNarrow && document.fullscreenEnabled && !document.fullscreenElement) {
       void sectionRef.current?.requestFullscreen?.().catch(() => {});
     }
   }, [isOpen]);
