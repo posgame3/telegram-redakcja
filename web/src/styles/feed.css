@@ -8,6 +8,7 @@
 @import "./feed/category-filter.css";
 @import "./feed/pending-bar.css";
 @import "./feed/feed-list.css";
+@import "./feed/popular-sidebar.css";
 @import "./feed/media.css";
 @import "./feed/reader.css";
 @import "./feed/reader-sheet.css";

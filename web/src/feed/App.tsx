@@ -8,6 +8,7 @@ import { FeedList } from "./components/FeedList";
 import { InstallDialog } from "./components/InstallDialog";
 import { Masthead } from "./components/Masthead";
 import { PendingBar } from "./components/PendingBar";
+import { PopularSidebar } from "./components/PopularSidebar";
 import { Reader } from "./components/Reader";
 import { useFontScale } from "./hooks/useFontScale";
 import { useInstallPrompt } from "./hooks/useInstallPrompt";
@@ -125,14 +126,20 @@ export function App() {
         }}
       />
 
-      <FeedList
-        items={visible}
-        seen={seen}
-        freshIds={feed.freshIds}
-        ratingFor={reactions.labelFor}
-        onOpen={reader.openReader}
-        busy={!feed.loaded}
-      />
+      {/* Srodkowa kolumna z artykulami + boczna lista popularnych - grid
+          dwukolumnowy tylko od szerokiego ekranu (responsive.css), na
+          telefonie sidebar jest schowany i .feed-shell dziala jak dawniej. */}
+      <div className="feed-shell">
+        <FeedList
+          items={visible}
+          seen={seen}
+          freshIds={feed.freshIds}
+          ratingFor={reactions.labelFor}
+          onOpen={reader.openReader}
+          busy={!feed.loaded}
+        />
+        <PopularSidebar items={feed.items} onOpen={reader.openReader} />
+      </div>
 
       <Reader
         reader={reader}

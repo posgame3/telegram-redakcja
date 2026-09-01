@@ -76,30 +76,30 @@
   }
 }
 
-/* Szerokie ekrany: prawdziwe lamy gazetowe. CSS columns sam rysuje wloskowa
-   linie w rynnie i sam ja usuwa, gdy liczba kolumn spada do jednej.
-   break-inside pilnuje, zeby wiadomosc nie pekala miedzy lamami. */
+/* Szerokie ekrany: jedna centralna kolumna artykulow (nie gazetowe lamy jak
+   wczesniej) plus boczna lista najbardziej polubionych po prawej. Kategorie
+   wycentrowane wzgledem calej szerokosci, bo na tym ekranie mieszcza sie
+   w jednej linii bez przewijania. */
 @media (min-width: 1024px) {
-  .feed-list {
-    max-width: 1180px;
+  .category-filter {
+    justify-content: center;
+  }
+  .feed-shell {
+    max-width: 1080px;
+    display: grid;
+    grid-template-columns: minmax(0, 720px) 280px;
+    justify-content: center;
+    align-items: start;
+    gap: 48px;
     padding: 8px 24px 56px;
-    columns: 2;
-    column-gap: 44px;
-    column-rule: 1px solid var(--rule-soft);
   }
-  .feed-item {
-    break-inside: avoid;
-  }
-  .feed-item-button {
-    padding: 16px 0;
-  }
-}
-
-@media (min-width: 1560px) {
   .feed-list {
-    max-width: 1560px;
-    columns: 3;
-    column-gap: 40px;
+    padding: 0;
+  }
+  .popular-sidebar {
+    display: block;
+    position: sticky;
+    top: 64px;
   }
 }
 
