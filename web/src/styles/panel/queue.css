@@ -94,13 +94,6 @@
   font-weight: 700;
   line-height: 1.3;
 }
-/* Material bez wygenerowanej treści (model odrzucony przez kontrole
-   oryginalnosci albo brak wspolnych faktow) - wyrozniony, zeby redaktor
-   nie musial wchodzic w kazdy z osobna, by to zauwazyc. */
-.event-row[data-missing-content="true"] .event-row-title {
-  color: var(--destructive);
-  font-style: italic;
-}
 .event-row-meta {
   display: block;
   margin-top: 8px;

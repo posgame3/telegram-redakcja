@@ -35,7 +35,13 @@ export function App() {
   const { theme, toggle: toggleTheme } = useTheme(STORAGE_KEYS.panelTheme);
 
   const view = usePanelView(setSelectedId);
-  const { events } = queue;
+  // Material bez wygenerowanej tresci (generator zadzialal fail-closed) nie
+  // ma niczego do zaakceptowania - redaktor nie moze na nim nic zrobic, wiec
+  // nie ma powodu, by mu sie w ogole pojawial. Zostaje w bazie (aggregator
+  // wciaz go widzi jako znany temat, wiec nie zescrapuje go ponownie w kolko),
+  // filtrujemy go tylko z widoku. Ponowna generacja jest mozliwa jedynie po
+  // wskazaniu materialu z linku - ten przypadek nie jest tu odfiltrowywany.
+  const events = queue.events.filter((event) => Boolean(event.level1 || event.title));
 
   // Zaznaczenie wyliczamy przy renderowaniu: gdy wskazany material zniknal
   // z kolejki (albo link byl nieaktualny), pokazujemy pierwszy dostepny.

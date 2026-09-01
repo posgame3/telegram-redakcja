@@ -95,23 +95,24 @@ describe("panel — domyślny widok kolejki", () => {
 });
 
 describe("panel — materiał bez wygenerowanej treści", () => {
-  it("jest oznaczony w kolejce, bez wchodzenia w szczegóły", async () => {
-    fetchEditorialQueue.mockResolvedValue(queue([makeEmptyEvent()]));
+  it("nie pojawia się w kolejce - redaktor nie ma na nim nic do zrobienia", async () => {
+    fetchEditorialQueue.mockResolvedValue(
+      queue([makeEmptyEvent(), makeEvent({ id: "z-tresc" })]),
+    );
     render(<App />);
 
+    // Tylko material z tresci trafia do listy; bez tresci jest odfiltrowany
+    // z widoku (zostaje w bazie, zeby aggregator nie zescrapowal tematu
+    // ponownie w kolko, ale redaktor nigdy go nie widzi jako pozycje kolejki).
     await waitFor(() => expect(queueRows()).toHaveLength(1));
-    const row = queueRows()[0]!;
-    expect(row).toHaveAttribute("data-missing-content", "true");
-    expect(row).toHaveTextContent("Bez treści");
+    expect(queueRows()[0]).not.toHaveAttribute("data-missing-content");
   });
 
-  it("pokazuje powód blokady z generatora", async () => {
+  it("pusta kolejka pokazuje puste-stanowy komunikat, gdy wszystkie materiały są bez treści", async () => {
     fetchEditorialQueue.mockResolvedValue(queue([makeEmptyEvent()]));
     render(<App />);
 
-    expect(
-      await screen.findByText(/Model nie spełnił zasad redakcyjnych w trzech próbach/),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Brak materiałów w tym widoku.")).toBeInTheDocument();
   });
 });
 

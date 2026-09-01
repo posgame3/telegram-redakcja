@@ -67,10 +67,10 @@ interface QueueRowProps {
 }
 
 function QueueRow({ event, selected, onSelect }: QueueRowProps) {
+  // Materialy bez wygenerowanej tresci (generator zadzialal fail-closed) sa
+  // odfiltrowane wczesniej, w App.tsx - tutaj headline jest juz zawsze
+  // niepustym tekstem.
   const headline = headlineOf(event);
-  // Material bez tresci powstaje, gdy generator zadzialal fail-closed. Wymaga
-  // ponownego generowania, wiec musi byc widoczny bez wchodzenia w szczegoly.
-  const missingContent = !headline;
 
   return (
     <button
@@ -78,16 +78,13 @@ function QueueRow({ event, selected, onSelect }: QueueRowProps) {
       className={selected ? "event-row is-selected" : "event-row"}
       aria-pressed={selected}
       data-status={event.status}
-      data-missing-content={missingContent ? "true" : undefined}
       onClick={() => onSelect(event.id)}
     >
       <span className="event-row-top">
         <span className="event-row-time">{event.detectedAt || "—"}</span>
         <span className="event-row-status">{STATUS_LABELS[event.status]}</span>
       </span>
-      <strong className="event-row-title">
-        {missingContent ? "⚠ Bez treści — wymaga generowania" : headline}
-      </strong>
+      <strong className="event-row-title">{headline}</strong>
       <span className="event-row-meta">
         {event.category.toUpperCase()} / {event.sources.length} ŹRÓDŁA / ZGODNOŚĆ {event.confidence}
         %
