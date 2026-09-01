@@ -58,14 +58,21 @@
   color: var(--primary-foreground);
 }
 
+/* Odstep miedzy wierszami (gap), nie tylko linia rozdzielajaca - stykajace sie
+   wiersze byly trudne do odroznienia jeden od drugiego, zwlaszcza gdy mialy
+   ten sam kolor statusu jeden pod drugim. */
 .event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   border-top: 1px solid var(--border);
+  padding-top: 10px;
 }
 .event-row {
   width: 100%;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 15px 4px;
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  padding: 15px 12px;
   background: transparent;
   text-align: left;
   cursor: pointer;
@@ -79,23 +86,19 @@
    published/rejected/do-decyzji uzywaly tego samego koloru - nierozróżnialne
    przy przegladaniu listy. */
 .event-row[data-status="review"] {
-  padding-left: 0;
-  border-left: 4px solid var(--accent);
+  border-left-color: var(--accent);
   background: color-mix(in oklch, var(--accent) 10%, transparent);
 }
 .event-row[data-status="published"] {
-  padding-left: 0;
-  border-left: 4px solid var(--chart-1);
+  border-left-color: var(--chart-1);
   background: color-mix(in oklch, var(--chart-1) 14%, transparent);
 }
 .event-row[data-status="approved"] {
-  padding-left: 0;
-  border-left: 4px solid var(--chart-4);
+  border-left-color: var(--chart-4);
   background: color-mix(in oklch, var(--chart-4) 10%, transparent);
 }
 .event-row[data-status="rejected"] {
-  padding-left: 0;
-  border-left: 4px solid var(--destructive);
+  border-left-color: var(--destructive);
   background: color-mix(in oklch, var(--destructive) 10%, transparent);
   opacity: 0.75;
 }
@@ -115,7 +118,6 @@
    nadpisywalo tlo na jednolity --accent, przez co po kliknieciu material
    "gubil" swoj status wizualnie. */
 .event-row.is-selected {
-  padding-left: 0;
   outline: 2px solid var(--foreground);
   outline-offset: -2px;
 }

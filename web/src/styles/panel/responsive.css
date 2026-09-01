@@ -43,6 +43,7 @@
   .event-list {
     max-height: 340px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
   .editorial-grid {
     grid-template-columns: 1fr;
