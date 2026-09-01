@@ -173,25 +173,10 @@ function EditorForm({
         </span>
       </div>
 
-      <dl className="event-meta">
-        <div>
-          <dt>ŹRÓDŁA</dt>
-          <dd>{event.sources.length}</dd>
-        </div>
-        <div>
-          <dt>WYKRYTO</dt>
-          <dd>{event.detectedAt || "—"}</dd>
-        </div>
-        <div>
-          <dt>ZGODNOŚĆ</dt>
-          <dd>{event.confidence}%</dd>
-        </div>
-        <div>
-          <dt>OCENY CZYTELNIKÓW</dt>
-          <dd>{reactions ? `▲ ${reactions.likes} / ▼ ${reactions.dislikes}` : "—"}</dd>
-        </div>
-      </dl>
-
+      {/* Redaktor odpalajac panel na telefonie widzi najpierw wygenerowany
+          tekst do oceny (skrot, kontekst), a decyzja jest zaraz pod nim -
+          metadane materialu (zrodla, data, zgodnosc) ida na dol, bo sluza
+          tylko do sprawdzenia w razie wątpliwości, nie do pierwszej oceny. */}
       <form
         onSubmit={(submitEvent) => {
           submitEvent.preventDefault();
@@ -342,6 +327,25 @@ function EditorForm({
       </form>
 
       <DecisionNote status={event.status} message={message} />
+
+      <dl className="event-meta">
+        <div>
+          <dt>ŹRÓDŁA</dt>
+          <dd>{event.sources.length}</dd>
+        </div>
+        <div>
+          <dt>WYKRYTO</dt>
+          <dd>{event.detectedAt || "—"}</dd>
+        </div>
+        <div>
+          <dt>ZGODNOŚĆ</dt>
+          <dd>{event.confidence}%</dd>
+        </div>
+        <div>
+          <dt>OCENY CZYTELNIKÓW</dt>
+          <dd>{reactions ? `▲ ${reactions.likes} / ▼ ${reactions.dislikes}` : "—"}</dd>
+        </div>
+      </dl>
     </section>
   );
 }

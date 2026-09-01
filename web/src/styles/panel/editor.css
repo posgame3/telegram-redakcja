@@ -22,11 +22,13 @@
   color: var(--destructive-foreground);
 }
 
+/* Metadane materialu: sluzą do sprawdzenia w razie wątpliwości, nie do
+   pierwszej oceny, wiec sa na samym dole - pod decyzja, nie nad trescia. */
 .event-meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin: 0 0 28px;
-  border-bottom: 1px solid var(--border);
+  grid-template-columns: repeat(4, 1fr);
+  margin: 24px 0 0;
+  border-top: 1px solid var(--border);
 }
 .event-meta div {
   padding: 14px 0;
@@ -126,9 +128,9 @@ textarea {
   display: block;
   width: 100%;
   resize: vertical;
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px;
+  padding: 16px;
   background: var(--card);
   color: var(--card-foreground);
   font-family: var(--font-sans);
