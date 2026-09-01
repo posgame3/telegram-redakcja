@@ -157,16 +157,21 @@ function EditorForm({
     markChanged(field, value.trim());
   };
 
+  const title = headlineOf(event) || "Materiał bez treści";
+
   return (
-    <section className="editor" id="editor" aria-labelledby="event-title">
+    <section className="editor" id="editor" aria-label={title}>
       <button className="button button-ghost back-to-queue" type="button" onClick={onBack}>
-        ← Kolejka tematów
+        ← Cofnij
       </button>
 
-      <div className="editor-head">
+      {/* Naglowek/kicker/status sa widoczne dopiero po wejsciu w EDYTUJ - to
+          metadane redakcyjne, nie tresc do oceny. Domyslny (prosty) widok,
+          uzywany glownie na telefonie, zaczyna sie prosto od SKROTU. */}
+      <div className="editor-head edit-only">
         <div>
           <p className="kicker">02 / MATERIAŁ / {event.id.toUpperCase()}</p>
-          <h2 id="event-title">{headlineOf(event) || "Materiał bez treści"}</h2>
+          <h2>{title}</h2>
         </div>
         <span className="status" data-status={event.status}>
           {STATUS_LABELS[event.status]}
@@ -267,62 +272,64 @@ function EditorForm({
             : "Kontekst musi mieć 60–140 słów i przejść kontrolę źródłową."}
         </p>
 
-        <OriginalityTrace event={event} shortCheck={checks.level1} />
+        <div className="edit-only">
+          <OriginalityTrace event={event} shortCheck={checks.level1} />
+        </div>
 
+        {/* Decyzja glowna (ODRZUC / ZATWIERDZ) jest jedynym krokiem widocznym
+            w prostym widoku - to ma zawsze byc dwuklikowa sciezka: przeczytaj
+            SKROT, zdecyduj. PUBLIKUJ i operacje pomocnicze (regeneracja, zapis
+            wersji, cofniecie decyzji) sa za EDYTUJ, bo dotycza redagowania,
+            nie pierwszej oceny materialu. */}
         <div className="decision-bar">
-          <div className="secondary-actions">
-            <button
-              className="button button-ghost edit-only"
-              type="submit"
-              disabled={locked || busy}
-            >
-              ZAPISZ WERSJĘ
-            </button>
+          <button
+            className="button button-danger"
+            type="button"
+            disabled={locked || busy}
+            onClick={() => onAction("reject")}
+          >
+            ODRZUĆ
+          </button>
+          <button
+            className="button button-primary"
+            type="button"
+            disabled={!canApprove || busy}
+            onClick={() => onAction("approve", patch())}
+          >
+            ZATWIERDŹ
+          </button>
+        </div>
+
+        <div className="decision-bar-secondary edit-only">
+          <button className="button button-ghost" type="submit" disabled={locked || busy}>
+            ZAPISZ WERSJĘ
+          </button>
+          <button
+            className="button button-ghost"
+            type="button"
+            disabled={locked || regenerating}
+            onClick={() => onAction("regenerate")}
+          >
+            {regenerating ? "GENERUJĘ..." : "WYGENERUJ PONOWNIE"}
+          </button>
+          {event.status !== "review" && (
             <button
               className="button button-ghost"
               type="button"
-              disabled={locked || regenerating}
-              onClick={() => onAction("regenerate")}
+              disabled={busy}
+              onClick={() => onAction("reopen")}
             >
-              {regenerating ? "GENERUJĘ..." : "WYGENERUJ PONOWNIE"}
+              COFNIJ DECYZJĘ
             </button>
-            {event.status !== "review" && (
-              <button
-                className="button button-ghost"
-                type="button"
-                disabled={busy}
-                onClick={() => onAction("reopen")}
-              >
-                COFNIJ DECYZJĘ
-              </button>
-            )}
-          </div>
-          <div className="primary-actions">
-            <button
-              className="button button-danger"
-              type="button"
-              disabled={locked || busy}
-              onClick={() => onAction("reject")}
-            >
-              ODRZUĆ
-            </button>
-            <button
-              className="button button-primary"
-              type="button"
-              disabled={!canApprove || busy}
-              onClick={() => onAction("approve", patch())}
-            >
-              ZATWIERDŹ
-            </button>
-            <button
-              className="button button-publish"
-              type="button"
-              disabled={event.status !== "approved" || busy}
-              onClick={() => onAction("publish")}
-            >
-              PUBLIKUJ
-            </button>
-          </div>
+          )}
+          <button
+            className="button button-publish"
+            type="button"
+            disabled={event.status !== "approved" || busy}
+            onClick={() => onAction("publish")}
+          >
+            PUBLIKUJ
+          </button>
         </div>
       </form>
 

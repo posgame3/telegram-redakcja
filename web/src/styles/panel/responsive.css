@@ -44,15 +44,6 @@
     max-height: 340px;
     overflow-y: auto;
   }
-  .decision-bar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .secondary-actions,
-  .primary-actions {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
   .editorial-grid {
     grid-template-columns: 1fr;
   }

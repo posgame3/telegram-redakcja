@@ -93,6 +93,13 @@ textarea[readonly]:not(:disabled) {
   body[data-view="detail"] .queue {
     display: none;
   }
+  /* W widoku materialu na telefonie znak redakcji, tryb kolorystyczny i
+     POBIERZ NOWE nie sluza do niczego - redaktor ma tylko podjac decyzje.
+     Cofniecie ("← Cofnij" w .editor) jest jedyna droga powrotu do kolejki,
+     gdzie te elementy sa i tak widoczne. */
+  body[data-view="detail"] .topbar {
+    display: none;
+  }
   .queue,
   .editor {
     border-bottom: 0;
