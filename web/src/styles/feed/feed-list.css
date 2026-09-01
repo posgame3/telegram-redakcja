@@ -129,6 +129,20 @@
   color: var(--ink);
   font-weight: 700;
 }
+/* Suma glosow wszystkich czytelnikow, obok wlasnej oceny (.feed-item-rating).
+   Kolory analogiczne do .popular-item-likes w bocznej liscie popularnych. */
+.feed-item-reactions {
+  display: inline-flex;
+  gap: 10px;
+}
+.feed-item-reactions-up {
+  color: var(--accent);
+  font-weight: 700;
+}
+.feed-item-reactions-down {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
 .feed-item[data-rated="like"] {
   box-shadow: inset 4px 0 0 var(--accent);
 }

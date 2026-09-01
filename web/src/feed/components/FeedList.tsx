@@ -80,6 +80,12 @@ function FeedItem({ item, lead, seen, fresh, rating, onOpen }: FeedItemProps) {
             <span>{item.sourceCount} źródła</span>
             {seen && <span className="feed-item-read">Przeczytane</span>}
             {rating && <span className="feed-item-rating">{rating}</span>}
+            {/* Suma glosow wszystkich czytelnikow (Publication.reactions),
+                nie tylko wlasna ocena z ratingFor powyzej. */}
+            <span className="feed-item-reactions" aria-label="Oceny czytelników">
+              <span className="feed-item-reactions-up">▲ {item.reactions.likes}</span>
+              <span className="feed-item-reactions-down">▼ {item.reactions.dislikes}</span>
+            </span>
           </div>
         </div>
       </button>
