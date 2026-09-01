@@ -229,9 +229,16 @@ export function useReaderQueue({
     if (event.pointerType === "mouse" && event.button !== 0) return;
     const target = event.target as HTMLElement;
     if (target.closest("a, button")) return;
-    // Gest zaczety w przewijanym tekscie nalezy do przegladarki, nie do karty -
-    // inaczej dluzszy skrot nie dalby sie przewinac dotykiem.
-    if (target.closest(".reader-deck")) return;
+    // Panel zrodel jest wizualnie nad karta, ale oba sa dzieckiem tego samego
+    // kontenera, na ktorym wisi gest - bez tego wylaczenia przeciagniecie po
+    // liscie zrodel przelaczaloby material pod spodem.
+    if (target.closest(".reader-sheet")) return;
+
+    // Przechwycenie pointera: gest kontynuuje sie na tym elemencie nawet gdy
+    // palec zjedzie poza jego granice (np. przy szybkim, dlugim przeciagnieciu
+    // blisko krawedzi ekranu) - bez tego move/up czasem nie dochodzily i swipe
+    // wygladal jak "nie zlapany".
+    event.currentTarget.setPointerCapture?.(event.pointerId);
 
     drag.current = {
       active: true,

@@ -47,10 +47,12 @@
   overflow: hidden;
   padding: 14px;
 }
-/* touch-action: pan-y (nie none) — na iOS wartosc "none" na tym elemencie
-   blokowalaby przewijanie rowniez w zagniezdzonym .reader-deck (efektywny
-   touch-action to przeciecie wartosci calego lancucha przodkow), przez co
-   dluzszy tekst wygladal jak ucięty i nie dalo sie go przewinac dotykiem. */
+/* touch-action: none - caly gest (gora/dol = ocena, w bok = nastepna) jest
+   obslugiwany przez JS (useReaderQueue), a nie przez przegladarke. Wczesniej
+   "pan-y" mowilo przegladarce "obsluz pionowe przewijanie natywnie", co
+   konkurowalo o te same zdarzenia dotykowe z naszym gestem oceny - stad
+   swipe gora/dol dzialal niepewnie/z opoznieniem. Tekst juz nie przewija sie
+   we wnetrzu karty (patrz .reader-deck), wiec nic nie wymaga natywnego pan-y. */
 .reader-card {
   position: relative;
   display: flex;
@@ -60,7 +62,7 @@
   border: 1px solid var(--rule);
   background: var(--surface);
   box-shadow: 3px 3px 0 var(--rule-soft);
-  touch-action: pan-y;
+  touch-action: none;
   user-select: none;
 }
 .reader-card:focus-visible {
@@ -137,46 +139,36 @@
   font-size: 1.5em;
   font-weight: 700;
 }
-/* Zapowiedz tekstu wypelnia karte i daje kontekst przed otwarciem panelu.
-   Na niskich ekranach ustepuje miejsca, zeby przycisk zawsze byl widoczny. */
-/* Zapowiedz zajmuje dokladnie tyle miejsca, ile zostalo w karcie, i gasnie u dolu,
-   zamiast byc ucieta w polowie wersu. Gdy miejsca nie ma, znika bez sladu. */
-/* Zapowiedz przewija sie, gdy nie mieści sie w karcie, wiec caly tekst jest
-   dostepny. touch-action: pan-y oddaje przewijanie przegladarce, a gest w bok
-   nadal dziala. */
+/* Tekst zawsze miesci sie w calosci na ekranie - bez wlasnego przewijania.
+   Dzieki temu gest oceny (przesuniecie w gore/w dol) dziala tak samo nad
+   trescia, jak nad resztą karty: nie ma tu konkurujacego gestu przewijania
+   przegladarki, ktory wczesniej "zjadal" swipe zaczety nad tekstem. */
 .reader-deck {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
+  overflow: hidden;
   margin: 0;
   color: var(--ink-soft);
-  font-size: clamp(0.82rem, 1vh + 0.5vw, 0.95rem);
-  line-height: 1.6;
-  touch-action: pan-y;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
+  font-size: clamp(0.78rem, 1.15vh + 0.45vw, 0.95rem);
+  line-height: 1.55;
 }
 .reader-deck[hidden] {
   display: none;
 }
-/* Delikatne wygaszenie u dolu przewijanego tekstu sygnalizuje, ze da sie go
-   przewinac dalej, zamiast wygladac jak przypadkowo urwany w polowie zdania.
-   mask-image dziala na samej tresci, wiec wygaszenie trzyma sie realnej
-   krawedzi przewijania niezaleznie od wysokosci karty. */
-.reader-deck {
-  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 20px), transparent);
-  mask-image: linear-gradient(to bottom, black calc(100% - 20px), transparent);
-}
 @media (max-height: 680px) {
   .reader-media {
-    height: clamp(110px, 20dvh, 170px);
+    height: clamp(90px, 16dvh, 150px);
   }
   .reader-body {
-    gap: 10px;
+    gap: 8px;
     padding: 14px;
   }
   .reader-body h1::first-letter {
     font-size: 1.3em;
+  }
+  .reader-deck {
+    font-size: clamp(0.72rem, 1.3vh + 0.4vw, 0.88rem);
+    line-height: 1.42;
   }
   .reader-hint {
     display: none;
