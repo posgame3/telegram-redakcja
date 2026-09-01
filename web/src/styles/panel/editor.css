@@ -162,9 +162,10 @@ textarea:disabled {
   min-height: 48px;
   font-size: 12px;
 }
-/* Operacje pomocnicze (zapis wersji, regeneracja, cofniecie decyzji,
-   publikacja) - widoczne tylko po wejsciu w EDYTUJ, bo dotycza redagowania,
-   nie pierwszej oceny materialu. */
+/* Drugi krok decyzji (PUBLIKUJ, COFNIJ DECYZJĘ - dzialaja na materiale juz
+   ocenionym) i osobno operacje redagowania (ZAPISZ WERSJĘ, WYGENERUJ PONOWNIE -
+   widoczne tylko po EDYTUJ) - obie grupy uzywaja tego samego ukladu, ale
+   pierwsza jest widoczna zawsze, druga chowa .edit-only na komponencie. */
 .decision-bar-secondary {
   display: flex;
   flex-wrap: wrap;

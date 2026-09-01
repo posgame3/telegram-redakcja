@@ -276,11 +276,12 @@ function EditorForm({
           <OriginalityTrace event={event} shortCheck={checks.level1} />
         </div>
 
-        {/* Decyzja glowna (ODRZUC / ZATWIERDZ) jest jedynym krokiem widocznym
-            w prostym widoku - to ma zawsze byc dwuklikowa sciezka: przeczytaj
-            SKROT, zdecyduj. PUBLIKUJ i operacje pomocnicze (regeneracja, zapis
-            wersji, cofniecie decyzji) sa za EDYTUJ, bo dotycza redagowania,
-            nie pierwszej oceny materialu. */}
+        {/* Decyzja glowna. ODRZUC/ZATWIERDZ oceniaja material do decyzji;
+            PUBLIKUJ i COFNIJ DECYZJE dzialaja na materiale juz oswiazonym
+            (zatwierdzonym/odrzuconym/opublikowanym) i musza byc widoczne
+            zawsze - to sa dalsze kroki tej samej decyzji, nie edycja tekstu,
+            wiec nie moga chowac sie za EDYTUJ (byl to blad: po ZATWIERDZ
+            redaktor nie mial czym kliknac PUBLIKUJ). */}
         <div className="decision-bar">
           <button
             className="button button-danger"
@@ -300,18 +301,7 @@ function EditorForm({
           </button>
         </div>
 
-        <div className="decision-bar-secondary edit-only">
-          <button className="button button-ghost" type="submit" disabled={locked || busy}>
-            ZAPISZ WERSJĘ
-          </button>
-          <button
-            className="button button-ghost"
-            type="button"
-            disabled={locked || regenerating}
-            onClick={() => onAction("regenerate")}
-          >
-            {regenerating ? "GENERUJĘ..." : "WYGENERUJ PONOWNIE"}
-          </button>
+        <div className="decision-bar-secondary">
           {event.status !== "review" && (
             <button
               className="button button-ghost"
@@ -331,11 +321,31 @@ function EditorForm({
             PUBLIKUJ
           </button>
         </div>
+
+        {/* Operacje redakcyjne (zapis wersji roboczej, ponowne wygenerowanie
+            tekstu) - widoczne dopiero po EDYTUJ, bo dotycza redagowania, nie
+            samej decyzji. */}
+        <div className="decision-bar-secondary edit-only">
+          <button className="button button-ghost" type="submit" disabled={locked || busy}>
+            ZAPISZ WERSJĘ
+          </button>
+          <button
+            className="button button-ghost"
+            type="button"
+            disabled={locked || regenerating}
+            onClick={() => onAction("regenerate")}
+          >
+            {regenerating ? "GENERUJĘ..." : "WYGENERUJ PONOWNIE"}
+          </button>
+        </div>
       </form>
 
       <DecisionNote status={event.status} message={message} />
 
-      <dl className="event-meta">
+      {/* Zrodla, wykrycie, zgodnosc i oceny czytelnikow - widoczne dopiero
+          po EDYTUJ, bo sluza do sprawdzenia w razie wątpliwości, nie do
+          pierwszej, szybkiej oceny materialu. */}
+      <dl className="event-meta edit-only">
         <div>
           <dt>ŹRÓDŁA</dt>
           <dd>{event.sources.length}</dd>
