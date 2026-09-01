@@ -67,9 +67,9 @@
     padding: 7px 12px;
   }
   .feed-item-button {
-    grid-template-columns: 104px 1fr;
+    grid-template-columns: 92px 1fr;
     gap: 12px;
-    padding: 22px 12px;
+    padding: 14px 12px;
   }
   .colophon {
     padding: 14px 12px;
