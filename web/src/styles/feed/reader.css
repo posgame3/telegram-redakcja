@@ -194,14 +194,15 @@
   border-top: 1px solid var(--rule);
   padding: 13px 14px max(13px, env(safe-area-inset-bottom));
 }
-/* Jedyny pozostajacy przycisk w czytniku - kolor akcentu i widoczna reakcja
-   na dotyk/kursor daja mu wyraznosc, ktorej nie mial jako plaski szaro-czarny
-   pasek wtapiajacy sie w tlo karty. */
+/* Jedyny pozostajacy przycisk w czytniku - ta sama neutralna stylistyka co
+   przyciski w .reader-bar (obwodka + tlo powierzchni), zeby wyglada jak
+   integralny element modala, nie jak wyskakujacy, kolorowy CTA. Rozroznia sie
+   od paska gornego tylko tym, ze zajmuje cala szerokosc. */
 .reader-more {
-  border: 1px solid var(--accent);
+  border: 1px solid var(--rule);
   padding: 13px;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--surface);
+  color: var(--ink);
   cursor: pointer;
   font-family: var(--sans);
   font-size: 11px;
@@ -212,16 +213,14 @@
 }
 .reader-more:hover:not(:disabled) {
   background: var(--ink);
-  border-color: var(--ink);
+  color: var(--paper);
 }
 .reader-more:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: scale(0.99);
 }
 .reader-more:disabled {
   cursor: not-allowed;
-  border-color: var(--rule);
-  background: var(--ink);
-  opacity: 0.6;
+  opacity: 0.5;
 }
 .reader-hint {
   margin: 0;
