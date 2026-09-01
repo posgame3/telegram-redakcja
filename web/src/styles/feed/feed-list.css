@@ -38,18 +38,16 @@
   border-bottom: 1px solid var(--rule-soft);
 }
 /* Jednolity uklad kazdego wiersza: zdjecie po lewej, tekst po prawej.
-   Wieksze niz wczesniej (148px zamiast 124px) - to teraz jedyna, centralna
-   kolumna feedu, nie jedna z 2-3 gazetowych lam, wiec ma wiecej miejsca.
    Wiecej odstepu miedzy wierszami (32px), zeby artykuly nie sklejaly sie
    w jedna mase tekstu. */
 .feed-item-button {
   display: grid;
   width: 100%;
-  grid-template-columns: 148px 1fr;
-  align-items: start;
-  gap: 20px;
+  grid-template-columns: 168px 1fr;
+  align-items: center;
+  gap: 22px;
   border: 0;
-  padding: 32px 4px;
+  padding: 26px 4px;
   background: transparent;
   cursor: pointer;
   text-align: left;
@@ -60,18 +58,15 @@
   text-underline-offset: 3px;
 }
 
-/* Zdjecia zachowuja oryginalne kolory.
-   Kwadrat kadruje portrety lepiej niz panorama, a object-position przesunieta
-   w gore trzyma twarze i glowy w kadrze zamiast obcinac je u gory.
-   Stosunek szerokosci do wysokosci jest ustalony (aspect-ratio), a nie
-   rozciagany do wysokosci wiersza - przy roznej dlugosci skrotu ta sama
-   grafika wczesniej byla kadrowana na inna wysokosc w kazdym wierszu, co
-   wygladalo jak rozciagniecie/zniekomelanie zdjecia. */
+/* Zdjecia zachowuja oryginalne kolory. Stosunek 4:3 jest ustalony
+   (aspect-ratio) i wyrownany do srodka wiersza - zdjecie nie jest rozciagane
+   do wysokosci calego skrotu (co je znieksztalcalo przy roznej dlugosci
+   tekstu), ale takze nie wisi samotnie przy krotszym tekscie, bo jest
+   wysrodkowane wzgledem calego wiersza, a nie przypiete do gory. */
 .feed-item-media {
   position: relative;
   overflow: hidden;
-  align-self: start;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3;
   margin: 0;
   border: 1px solid var(--rule);
   background: var(--paper-deep);
