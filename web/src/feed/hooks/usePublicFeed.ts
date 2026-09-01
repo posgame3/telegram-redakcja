@@ -36,6 +36,8 @@ interface FeedState {
 
 export interface UsePublicFeed extends FeedState {
   updatedLabel: string;
+  /** Ostatnie odswiezenie nie powiodlo sie - czytelnik czyta stara wersje wydania. */
+  offline: boolean;
   loaded: boolean;
   /** Przenosi pobrane materialy na ekran i zapamietuje, co zostalo pokazane. */
   adopt: () => void;
@@ -60,6 +62,7 @@ export function usePublicFeed(getReaderSnapshot: () => ReaderSnapshot): UsePubli
     freshIds: new Set<string>(),
   });
   const [updatedLabel, setUpdatedLabel] = useState("Aktualizuję…");
+  const [offline, setOffline] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   /** Promuje pobrane materialy na ekran, wyliczajac, ktore sa nowe dla czytelnika. */
@@ -95,6 +98,7 @@ export function usePublicFeed(getReaderSnapshot: () => ReaderSnapshot): UsePubli
       try {
         const feed = await fetchPublicFeed();
         setUpdatedLabel(`Aktualizacja ${formatTime(new Date().toISOString())}`);
+        setOffline(false);
         setState((current) => {
           const next = { ...current, fetched: feed.items };
           const atTop = window.scrollY < TOP_SCROLL_THRESHOLD;
@@ -104,6 +108,7 @@ export function usePublicFeed(getReaderSnapshot: () => ReaderSnapshot): UsePubli
         });
       } catch {
         setUpdatedLabel("Tryb offline");
+        setOffline(true);
       } finally {
         setLoaded(true);
       }
@@ -127,5 +132,5 @@ export function usePublicFeed(getReaderSnapshot: () => ReaderSnapshot): UsePubli
     return () => window.clearInterval(timer);
   }, []);
 
-  return { ...state, updatedLabel, loaded, adopt, refresh, applyReactionCounts };
+  return { ...state, updatedLabel, offline, loaded, adopt, refresh, applyReactionCounts };
 }

@@ -2,25 +2,26 @@ import { formatEditionDate } from "../../shared/format";
 import type { UseFontScale } from "../hooks/useFontScale";
 
 interface MastheadProps {
-  updatedLabel: string;
   font: UseFontScale;
   installAvailable: boolean;
   onOpenInstall: () => void;
-  onToggleTheme: () => void;
+  /** Ostatnie odswiezenie nie powiodlo sie - czytelnik czyta stara wersje wydania. */
+  offline: boolean;
 }
 
-/** Winieta wydania: data, skala tekstu, instalacja i tryb kolorystyczny. */
-export function Masthead({
-  updatedLabel,
-  font,
-  installAvailable,
-  onOpenInstall,
-  onToggleTheme,
-}: MastheadProps) {
+/** Winieta wydania: data i skala tekstu. */
+export function Masthead({ font, installAvailable, onOpenInstall, offline }: MastheadProps) {
   return (
     <header className="masthead">
       <div className="masthead-utility">
-        <span id="feed-updated">{updatedLabel}</span>
+        {/* Godzina aktualizacji zniknela z winiety - zostaje tylko ostrzezenie
+            o trybie offline, bo to informuje czytelnika, ze widzi nieaktualne
+            wydanie, nie tylko kosmetyczny znacznik czasu. */}
+        {offline && (
+          <span id="feed-offline-notice" role="status">
+            Tryb offline
+          </span>
+        )}
         <div className="masthead-buttons">
           <span className="font-control" role="group" aria-label="Wielkość tekstu">
             <button
@@ -51,9 +52,6 @@ export function Masthead({
               </span>
             </button>
           )}
-          <button type="button" aria-label="Przełącz tryb kolorystyczny" onClick={onToggleTheme}>
-            Tryb
-          </button>
         </div>
       </div>
 

@@ -33,7 +33,9 @@ export function App() {
   // dzieki temu stan czytnika nie wymusza restartu odliczania.
   const readerSnapshot = useRef<ReaderSnapshot>({ open: false, currentId: null });
   const feed = usePublicFeed(useCallback(() => readerSnapshot.current, []));
-  const { toggle: toggleTheme } = useTheme(STORAGE_KEYS.feedTheme);
+  // Przelacznik trybu usuniety z winiety, ale hook nadal ustawia data-theme
+  // na <html> wedlug zapisanej wczesniej preferencji czytelnika.
+  useTheme(STORAGE_KEYS.feedTheme);
   const font = useFontScale();
   const install = useInstallPrompt();
   const { seen, markSeen } = useSeen();
@@ -109,11 +111,10 @@ export function App() {
       </a>
 
       <Masthead
-        updatedLabel={feed.updatedLabel}
         font={font}
         installAvailable={install.available}
         onOpenInstall={() => setInstallOpen(true)}
-        onToggleTheme={toggleTheme}
+        offline={feed.offline}
       />
 
       <CategoryFilter active={category} onChange={setCategory} />

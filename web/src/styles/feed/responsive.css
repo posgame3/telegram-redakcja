@@ -57,10 +57,10 @@
   .masthead-line span:not(#masthead-date) {
     display: none;
   }
-  #feed-updated {
+  #feed-offline-notice {
     order: 4;
-    flex: 0 0 auto;
-    margin-left: auto;
+    flex: 1 1 100%;
+    margin-right: 0;
     font-size: 10px;
   }
   .category-filter {

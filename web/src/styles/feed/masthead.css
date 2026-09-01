@@ -7,10 +7,13 @@
   background: var(--paper);
   text-align: center;
 }
+/* justify-content: flex-end (nie space-between) - komunikat offline pojawia
+   sie tylko czasowo, wiec .masthead-buttons ma zawsze trzymac sie prawej
+   krawedzi, niezaleznie od tego, czy pierwszy element jest w DOM. */
 .masthead-utility {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   border-bottom: 1px solid var(--rule-soft);
   padding-bottom: 8px;
@@ -19,6 +22,11 @@
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+#feed-offline-notice {
+  margin-right: auto;
+  color: var(--accent);
+  font-weight: 700;
 }
 .masthead-buttons {
   display: flex;
