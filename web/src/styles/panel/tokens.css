@@ -38,7 +38,10 @@
   --sidebar-border: oklch(0.28 0.014 60);
   --sidebar-ring: oklch(0.55 0.14 250);
   --radius: 0;
-  --font-sans: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  /* --font-sans trzyma teraz tez sans-serif (nazwa zmiennej zostaje, zmienia
+     sie wartosc) - panel uzywal serif dla tresci/naglowkow, teraz jednolicie
+     sans-serif w calej aplikacji (feed + panel). */
+  --font-sans: "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Helvetica Neue", Arial, sans-serif;
 }
 

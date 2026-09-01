@@ -14,7 +14,9 @@
   --accent: oklch(0.42 0.13 28);
   --accent-ink: oklch(0.97 0.014 90);
   --focus: oklch(0.55 0.14 250);
-  --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  /* --serif trzyma teraz tez stos sans-serif - nazwa zmiennej zostaje (uzywana
+     w calym arkuszu jako krój tresci/naglowkow), zmienia sie tylko wartosc. */
+  --serif: "Helvetica Neue", Arial, sans-serif;
   --sans: "Helvetica Neue", Arial, sans-serif;
 }
 [data-theme="dark"] {
