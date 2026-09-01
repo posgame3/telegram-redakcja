@@ -6,12 +6,8 @@
   margin: 0 auto;
   padding: 0 0 48px;
 }
-/* Nieprzeczytane: czerwona krawedz + numer w kolorze akcentu w marginesie. */
 .feed-item[data-fresh="true"] {
-  border-left: 5px solid var(--accent);
-}
-.feed-item[data-fresh="true"] .feed-item-index {
-  color: var(--accent);
+  box-shadow: inset 4px 0 0 var(--accent);
 }
 .feed-item-fresh {
   border: 1px solid var(--accent);
@@ -31,39 +27,18 @@
   color: var(--ink);
   font-size: 1.25rem;
 }
-/* Margines (numer porzadkowy, stan) + kolumna tresci. Krawedz krewna 5px
-   dla nieprzeczytanych ustawiona wyzej, wiec bazowy border-left jest
-   przezroczysty - inaczej pojawienie sie krawedzi przesuwaloby tresc. */
 .feed-item {
-  display: grid;
-  grid-template-columns: 96px 1fr;
   border-bottom: 1px solid var(--rule-soft);
-  border-left: 5px solid transparent;
 }
-.feed-item-index {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding-top: 18px;
-  color: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-}
-.feed-item-index-rating {
-  font-size: 11px;
-}
-/* Jednolity uklad wiersza: tekst po lewej, zdjecie po prawej - lewa krawedz
-   tekstu tworzy jedna linie z numerem porzadkowym w marginesie. */
+/* Jednolity uklad kazdego wiersza: zdjecie po lewej, tekst po prawej. */
 .feed-item-button {
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 124px;
+  grid-template-columns: 124px 1fr;
   align-items: start;
   gap: 16px;
   border: 0;
-  padding: 18px 18px 18px 0;
+  padding: 18px;
   background: transparent;
   cursor: pointer;
   text-align: left;
@@ -122,13 +97,9 @@
   margin: 0;
   font-family: var(--serif);
   font-size: 1.1rem;
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1.38;
   letter-spacing: -0.005em;
-}
-/* Spectral 800 sie zalewa na ciemnym tle - w trybie nocnym schodzimy do 300. */
-[data-theme="dark"] .feed-item-body h2 {
-  font-weight: 300;
 }
 .feed-item-footer {
   display: flex;

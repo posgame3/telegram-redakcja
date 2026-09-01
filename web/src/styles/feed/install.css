@@ -1,16 +1,14 @@
 /* Okno instalacji aplikacji. */
 
 /* --- Okno instalacji --- */
-/* Jedyne wypelnione tlo-przyciskiem w calej apce: to jest "ogloszenie
-   wlasne" redakcji, wiec wyjatkowo ma cieżar wizualny ramki i cienia. */
 .install-dialog {
   max-width: 540px;
   width: calc(100vw - 24px);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--rule);
   padding: 0;
   background: var(--surface);
   color: var(--ink);
-  box-shadow: var(--shadow-hard);
+  box-shadow: 5px 5px 0 var(--rule-soft);
 }
 .install-dialog::backdrop {
   background: oklch(0.21 0.012 60 / 0.62);
@@ -28,94 +26,51 @@
 }
 .install-head h2 {
   margin: 0;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-.install-head h2::before {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  content: "Ogłoszenie własne";
+  font-size: 1.5rem;
 }
 .install-head button {
-  border: 1px solid var(--rule-soft);
-  padding: 6px 10px;
-  background: transparent;
-  color: var(--ink-muted);
+  border: 1px solid var(--rule);
+  padding: 7px 11px;
+  background: var(--paper);
   cursor: pointer;
-  font-family: var(--mono);
-  font-size: 10.5px;
+  font-family: var(--sans);
+  font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-.install-head button:hover {
-  border-color: var(--rule);
-  color: var(--ink);
-}
 .install-lead {
   color: var(--ink-soft);
-  font-family: var(--serif);
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   line-height: 1.6;
 }
-/* Jedyny wypelniony przycisk w calej apce - reszta sterowania jest gestem
-   albo drukiem w ramce, ten wyjatek sygnalizuje jedyna prawdziwa akcje. */
 .install-primary {
   width: 100%;
   margin-bottom: 18px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--rule);
   padding: 14px;
   background: var(--ink);
-  color: var(--accent-ink);
+  color: var(--paper);
   cursor: pointer;
   font-family: var(--sans);
   font-size: 12px;
-  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-.install-primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
 }
 .install-steps section {
   margin-bottom: 18px;
 }
 .install-steps h3 {
   margin: 0 0 8px;
-  color: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 10.5px;
+  font-family: var(--sans);
+  font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-/* Kroki numerowane w marginesie mono, tresc kroku po prawej. */
 .install-steps ol {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding-left: 22px;
   display: grid;
-  gap: 9px;
+  gap: 7px;
   font-size: 0.94rem;
   line-height: 1.55;
-  counter-reset: step;
-}
-.install-steps li {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  gap: 10px;
-  counter-increment: step;
-}
-.install-steps li::before {
-  content: counter(step, decimal-leading-zero);
-  color: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 11px;
 }

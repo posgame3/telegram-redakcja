@@ -26,7 +26,6 @@ export function FeedList({ items, seen, freshIds, ratingFor, onOpen, busy }: Fee
           <FeedItem
             key={item.id}
             item={item}
-            position={position}
             lead={position === 0}
             seen={seen.has(item.id)}
             fresh={freshIds.has(item.id)}
@@ -41,8 +40,6 @@ export function FeedList({ items, seen, freshIds, ratingFor, onOpen, busy }: Fee
 
 interface FeedItemProps {
   item: Publication;
-  /** Numer porzadkowy w wydaniu (od 0). Wyswietlany w marginesie jako nosnik stanu. */
-  position: number;
   lead: boolean;
   seen: boolean;
   fresh: boolean;
@@ -50,31 +47,27 @@ interface FeedItemProps {
   onOpen: (item: Publication, trigger: HTMLElement) => void;
 }
 
-function FeedItem({ item, position, lead, seen, fresh, rating, onOpen }: FeedItemProps) {
+function FeedItem({ item, lead, seen, fresh, rating, onOpen }: FeedItemProps) {
   const headline = headlineOf(item);
-  const ratedValue = rating ? (rating.startsWith("▲") ? "like" : "dislike") : undefined;
 
   return (
     <article
       className={lead ? "feed-item is-lead" : "feed-item"}
-      data-rated={ratedValue}
+      data-rated={rating ? (rating.startsWith("▲") ? "like" : "dislike") : undefined}
       data-fresh={fresh ? "true" : undefined}
       data-seen={seen ? "true" : undefined}
     >
-      {/* Margines nalezy do stanu i oceny, nigdy do tresci: numer, nowosc
-          i wlasny glos sa tu widoczne bez wchodzenia w material. Element jest
-          dekoracyjny - przycisk ponizej ma juz pelny opis dla czytnikow ekranu. */}
-      <span className="feed-item-index" aria-hidden="true">
-        {String(position + 1).padStart(2, "0")}
-        {ratedValue === "like" && <span className="feed-item-index-rating">▲</span>}
-        {ratedValue === "dislike" && <span className="feed-item-index-rating">▼</span>}
-      </span>
       <button
         type="button"
         className="feed-item-button"
         aria-label={`Otwórz wiadomość: ${headline}`}
         onClick={(event) => onOpen(item, event.currentTarget)}
       >
+        <MediaFigure
+          item={item}
+          className={lead ? "feed-item-media is-lead" : "feed-item-media"}
+          variant="thumb"
+        />
         <div className="feed-item-body">
           <div className="feed-item-meta">
             <span className="feed-item-category">{item.category}</span>
@@ -89,11 +82,6 @@ function FeedItem({ item, position, lead, seen, fresh, rating, onOpen }: FeedIte
             {rating && <span className="feed-item-rating">{rating}</span>}
           </div>
         </div>
-        <MediaFigure
-          item={item}
-          className={lead ? "feed-item-media is-lead" : "feed-item-media"}
-          variant="thumb"
-        />
       </button>
     </article>
   );

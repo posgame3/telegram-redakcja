@@ -5,13 +5,12 @@
   flex-wrap: wrap;
   gap: 10px;
   justify-content: space-between;
-  border-top: 1px solid var(--ink);
+  border-top: 3px double var(--rule);
   padding: 18px;
-  background: var(--paper-deep);
-  color: var(--ink-muted);
+  color: var(--ink-soft);
   font-family: var(--sans);
-  font-size: 10.5px;
-  letter-spacing: 0.18em;
+  font-size: 10px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 

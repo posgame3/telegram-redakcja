@@ -18,11 +18,9 @@
   flex-wrap: wrap;
   gap: 12px;
   margin: 0 0 14px;
-  border-bottom: 1px solid var(--rule-soft);
-  padding-bottom: 12px;
-  color: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 10.5px;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -60,8 +58,7 @@
   margin: 0 0 20px;
   font-family: var(--serif);
   font-size: clamp(23px, 4.4vw, 34px);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 700;
   line-height: 1.22;
 }
 .article h1::first-letter {
@@ -69,8 +66,6 @@
 }
 .article-context {
   margin: 0 0 30px;
-  font-family: var(--serif);
-  font-weight: 300;
   font-size: 1.08rem;
   line-height: 1.75;
   text-align: justify;
@@ -79,26 +74,24 @@
 .article-cta {
   display: inline-block;
   margin-top: 26px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--rule);
   padding: 13px 18px;
   background: var(--ink);
-  color: var(--accent-ink);
+  color: var(--paper);
   font-family: var(--sans);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-decoration: none;
   text-transform: uppercase;
 }
 .article-cta:hover {
   background: var(--accent);
-  border-color: var(--accent);
   color: var(--accent-ink);
 }
 .share-note {
   margin: 0;
-  color: var(--ink-muted);
-  font-family: var(--mono);
+  color: var(--ink-soft);
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.06em;
 }

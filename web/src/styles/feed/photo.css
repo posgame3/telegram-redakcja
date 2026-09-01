@@ -20,16 +20,14 @@
   background: var(--ink);
   color: var(--paper);
 }
-/* Podglad zdjecia w wlasnej "ciemni": stale ciemne tlo niezalezne od trybu
-   dziennego/nocnego strony, zeby fotografia byla punktem odniesienia. */
 .photo-dialog {
   max-width: min(96vw, 1100px);
   max-height: 94dvh;
   width: auto;
-  border: 1px solid #17150f;
+  border: 1px solid var(--rule);
   padding: 0;
-  background: #17150f;
-  color: #f4efe4;
+  background: var(--surface);
+  color: var(--ink);
 }
 .photo-dialog::backdrop {
   background: oklch(0.14 0.01 60 / 0.82);
@@ -44,33 +42,33 @@
   max-width: 100%;
   max-height: calc(94dvh - 52px);
   object-fit: contain;
-  background: #17150f;
+  background: var(--paper-deep);
 }
 .photo-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid rgba(244, 239, 228, 0.2);
+  border-top: 1px solid var(--rule);
   padding: 10px 14px;
-  color: rgba(244, 239, 228, 0.72);
-  font-family: var(--mono);
+  color: var(--ink-soft);
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .photo-bar button {
-  border: 1px solid rgba(244, 239, 228, 0.45);
+  border: 1px solid var(--rule);
   padding: 8px 11px;
-  background: transparent;
-  color: #f4efe4;
+  background: var(--paper);
+  color: var(--ink);
   cursor: pointer;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .photo-bar button:hover {
-  border-color: #f4efe4;
-  background: rgba(244, 239, 228, 0.12);
+  background: var(--ink);
+  color: var(--paper);
 }

@@ -8,13 +8,16 @@
   align-content: space-between;
   gap: 6px;
   padding: 10px;
-  background: repeating-linear-gradient(135deg, #ded5c1 0 8px, #d5cbb5 8px 16px);
-}
-[data-theme="dark"] .media-fallback {
-  background: repeating-linear-gradient(135deg, #201d17 0 8px, #17150f 8px 16px);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      color-mix(in oklch, var(--ink) 8%, transparent) 0 2px,
+      transparent 2px 5px
+    ),
+    var(--paper-deep);
 }
 .media-fallback span {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -24,5 +27,5 @@
   font-weight: 700;
 }
 .media-fallback-mark {
-  color: var(--ink-muted);
+  color: var(--ink-soft);
 }
