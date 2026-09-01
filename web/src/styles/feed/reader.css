@@ -194,19 +194,33 @@
   border-top: 1px solid var(--rule);
   padding: 13px 14px max(13px, env(safe-area-inset-bottom));
 }
+/* Jedyny pozostajacy przycisk w czytniku - kolor akcentu i widoczna reakcja
+   na dotyk/kursor daja mu wyraznosc, ktorej nie mial jako plaski szaro-czarny
+   pasek wtapiajacy sie w tlo karty. */
 .reader-more {
-  border: 1px solid var(--rule);
+  border: 1px solid var(--accent);
   padding: 13px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--accent-ink);
   cursor: pointer;
   font-family: var(--sans);
   font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.reader-more:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.reader-more:active:not(:disabled) {
+  transform: scale(0.98);
 }
 .reader-more:disabled {
   cursor: not-allowed;
+  border-color: var(--rule);
+  background: var(--ink);
   opacity: 0.6;
 }
 .reader-hint {
