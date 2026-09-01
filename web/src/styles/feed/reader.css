@@ -1,12 +1,17 @@
 /* Czytnik pelnoekranowy: karta, tresc, pieczatki i pasek akcji. */
 
 /* --- Czytnik pelnoekranowy --- */
+/* inset: 0 na position: fixed juz rozciaga element na cala widoczna
+   powierzchnie ekranu. Dodatkowe "height: 100dvh" potrafilo na iOS Safari
+   policzyc sie wedlug duzego viewportu (z chowajacym sie paskiem adresu)
+   i wtedy modal byl nizszy niz realny ekran - u dolu zostawala szara
+   szczelina, w ktorej widac bylo systemowy pasek przegladarki, a przycisk
+   "Sprawdz zrodla" wygladal, jakby wystawal poza modal. */
 .reader {
   position: fixed;
   z-index: 30;
   inset: 0;
   display: flex;
-  height: 100dvh;
   flex-direction: column;
   background: var(--paper-deep);
 }
@@ -123,14 +128,14 @@
   font-weight: 400;
   line-height: 1.34;
 }
-/* Inicjal jak w druku. ::first-letter jest dostepnym sposobem na ten efekt. */
+/* Inicjal jak w druku, ale bez float: przy waskiej karcie (telefon) floatowana
+   duza litera zajmowala 2-3 linie, wiec tekst zawijal sie wokol niej z innym
+   wcieciem na kazdej z tych linii - naglowek wygladal postrzepiony/nierowny.
+   Bez float litera po prostu rosnie w miejscu, nie zmieniajac zawijania. */
 .reader-body h1::first-letter {
-  float: left;
-  margin: 6px 8px 0 0;
   color: var(--accent);
-  font-size: 3.1em;
+  font-size: 1.5em;
   font-weight: 700;
-  line-height: 0.78;
 }
 /* Zapowiedz tekstu wypelnia karte i daje kontekst przed otwarciem panelu.
    Na niskich ekranach ustepuje miejsca, zeby przycisk zawsze byl widoczny. */
@@ -171,7 +176,7 @@
     padding: 14px;
   }
   .reader-body h1::first-letter {
-    font-size: 2.5em;
+    font-size: 1.3em;
   }
   .reader-hint {
     display: none;
